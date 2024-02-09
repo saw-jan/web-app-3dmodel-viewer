@@ -9,10 +9,20 @@
       <label class="oc-p-s">{{ loadingProgress }}%</label>
     </div>
     <div v-else-if="!loadingModel && !hasError" id="scene-container" />
-    <div v-else>Todo: Error</div>
+    <div v-else>
+      <NoContentMessage icon="file-warning">
+        <template #message>
+          <span>Something went wrong. Cannot render the model</span>
+        </template>
+      </NoContentMessage>
+    </div>
   </div>
   <div v-else>
-    <h1>Todo: Not Supported</h1>
+    <NoContentMessage icon="error-warning">
+      <template #message>
+        <span>This browser doesn't support WebGL</span>
+      </template>
+    </NoContentMessage>
   </div>
 </template>
 
@@ -31,13 +41,12 @@ import WebGL from 'three/examples/jsm/capabilities/WebGL'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { AppLoadingSpinner } from '@ownclouders/web-pkg'
+import { AppLoadingSpinner, NoContentMessage } from '@ownclouders/web-pkg'
 
 const environment = new URL('./assets/warehouse_1k.hdr', import.meta.url).href
 
 // 3d canvas
 let camera: PerspectiveCamera, renderer: WebGLRenderer, controls: OrbitControls
-
 const scene: Scene = new Scene()
 
 // props
@@ -45,10 +54,10 @@ const props = defineProps({ url: String })
 
 // states
 const sceneWrapper = ref<HTMLElement | undefined>()
-const hasWebGLSupport = ref(WebGL.isWebGLAvailable())
-const loadingModel = ref(true)
-const hasError = ref(false)
-const loadingProgress = ref(0)
+const hasWebGLSupport = ref<boolean>(WebGL.isWebGLAvailable())
+const loadingModel = ref<boolean>(true)
+const hasError = ref<boolean>(false)
+const loadingProgress = ref<number>(0)
 
 onMounted(() => {
   if (unref(hasWebGLSupport)) {
