@@ -6,7 +6,13 @@ It is an extension for [ownCloud web](https://github.com/owncloud/web) for viewi
 
 ## Build and Run
 
-1. Build the extension
+1. Install the dependencies
+
+   ```bash
+   pnpm i
+   ```
+
+2. Build the extension
 
    ```bash
    pnpm build
@@ -18,7 +24,7 @@ It is an extension for [ownCloud web](https://github.com/owncloud/web) for viewi
    pnpm build:w
    ```
 
-2. Start the extension and the web services
+3. Start the extension and the web services
 
    ```bash
    docker compose up
