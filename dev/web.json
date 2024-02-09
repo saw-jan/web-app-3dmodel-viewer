@@ -12,7 +12,7 @@
   "external_apps": [
     {
       "id": "3dmodel-viewer",
-      "path": "http://localhost:3000/js/web-3dmodel-viewer.js"
+      "path": "http://localhost:3000/extension.js"
     }
   ]
 }
