@@ -167,7 +167,6 @@ function changeCursor(state: string) {
   }
 }
 #spinner {
-  background-color: var(--oc-color-background-hover);
   & > div {
     width: unset;
     height: unset;
