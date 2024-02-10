@@ -89,10 +89,14 @@ let iniCamPosition: Vector3 | null = null
 let iniCamZPosition: number = 0
 const iniCamRotation: Euler = new Euler(0, 0, 0)
 
+// =====================
 // props
+// =====================
 const props = defineProps({ url: String })
 
+// =====================
 // states
+// =====================
 const sceneWrapper = ref<HTMLElement | undefined>()
 const hasWebGLSupport = ref<boolean>(WebGL.isWebGLAvailable())
 const loadingModel = ref<boolean>(true)
@@ -101,6 +105,9 @@ const loadingProgress = ref<number>(0)
 const isFullScreenModeActivated = ref<boolean>(false)
 const activeIndex = ref<number>(0)
 
+// =====================
+// lifecycle hooks
+// =====================
 onMounted(() => {
   if (unref(hasWebGLSupport)) {
     const { offsetWidth, offsetHeight } = unref(sceneWrapper)
@@ -134,7 +141,6 @@ onMounted(() => {
     )
   }
 })
-
 onBeforeUnmount(() => {
   scene.traverse((obj) => {
     scene.remove(obj)
@@ -142,23 +148,22 @@ onBeforeUnmount(() => {
   renderer.dispose()
 })
 
+// =====================
 // computed properties
+// =====================
 const isModelReady = computed(() => !unref(loadingModel) && !unref(hasError))
-
 const sortBy = computed(() => {
   if (!unref(contextRouteQuery)) {
     return 'name'
   }
   return unref(contextRouteQuery)['sort-by'] ?? 'name'
 })
-
 const sortDir = computed(() => {
   if (!unref(contextRouteQuery)) {
     return 'desc'
   }
   return unref(contextRouteQuery)['sort-dir'] ?? 'asc'
 })
-
 const modelFiles = computed<Resource[]>(() => {
   if (!unref(activeFiles)) {
     return []
@@ -174,23 +179,9 @@ const activeModelFile = computed(() => {
   return unref(modelFiles)[unref(activeIndex)]
 })
 
-const updateLocalHistory = () => {
-  if (!unref(currentFileContext)) {
-    return
-  }
-
-  const { params, query } = createFileRouteOptions(
-    unref(unref(currentFileContext).space),
-    unref(activeModelFile)
-  )
-  router.replace({
-    ...unref(route),
-    params: { ...unref(route).params, ...params },
-    query: { ...unref(route).query, ...query }
-  })
-}
-
+// =====================
 // methods
+// =====================
 function renderModel() {
   const loader = new GLTFLoader()
   loader.load(
@@ -202,7 +193,7 @@ function renderModel() {
       const box = new Box3().setFromObject(modelScene)
       iniCamPosition = box.getCenter(new Vector3())
 
-      // set camera at model
+      // direct camera at model
       camera.position.copy(iniCamPosition)
       iniCamZPosition += box.getSize(new Vector3()).length() + 1
       camera.position.z = iniCamZPosition
@@ -227,20 +218,32 @@ function renderModel() {
     }
   )
 }
-
 function render() {
   requestAnimationFrame(render)
   controls.update()
   renderer.render(scene, camera)
 }
-
 function changeCursor(state: string) {
   const el = unref(sceneWrapper)
   if (el.classList.contains('model-viewport')) {
     el.style.cursor = state
   }
 }
+function updateLocalHistory() {
+  if (!unref(currentFileContext)) {
+    return
+  }
 
+  const { params, query } = createFileRouteOptions(
+    unref(unref(currentFileContext).space),
+    unref(activeModelFile)
+  )
+  router.replace({
+    ...unref(route),
+    params: { ...unref(route).params, ...params },
+    query: { ...unref(route).query, ...query }
+  })
+}
 function next() {
   if (!isModelReady) {
     return
@@ -253,7 +256,6 @@ function next() {
   activeIndex.value++
   updateLocalHistory()
 }
-
 function prev() {
   if (!isModelReady) {
     return
@@ -266,7 +268,6 @@ function prev() {
   activeIndex.value--
   updateLocalHistory()
 }
-
 function toggleFullscreenMode() {
   const activateFullscreen = !unref(isFullScreenModeActivated)
   const el = unref(sceneWrapper)
@@ -281,7 +282,6 @@ function toggleFullscreenMode() {
     }
   }
 }
-
 function resetModelPosition() {
   camera.position.copy(iniCamPosition)
   camera.position.z = iniCamZPosition
