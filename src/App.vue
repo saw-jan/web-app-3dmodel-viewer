@@ -1,7 +1,14 @@
 <template>
-  <div v-if="hasWebGLSupport" ref="sceneWrapper" id="scene-wrapper">
+  <div
+    v-if="hasWebGLSupport"
+    ref="sceneWrapper"
+    id="scene-wrapper"
+    :class="isModelReady ? 'model-viewport' : ''"
+    @mousedown="changeCursor('grabbing')"
+    @mouseup="changeCursor('grab')"
+  >
     <div
-      v-if="loadingModel && !hasError"
+      v-if="!isModelReady"
       id="spinner"
       class="oc-flex oc-flex-column oc-flex-middle oc-flex-center oc-height-1-1 oc-width-1-1"
     >
@@ -26,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, unref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, unref, onMounted, onBeforeUnmount, computed } from 'vue'
 import {
   Scene,
   PerspectiveCamera,
@@ -98,6 +105,10 @@ onBeforeUnmount(() => {
   renderer.dispose()
 })
 
+// computed properties
+const isModelReady = computed(() => !unref(loadingModel) && !unref(hasError))
+
+// methods
 function renderModel() {
   const loader = new GLTFLoader()
   loader.load(
@@ -137,18 +148,29 @@ function render() {
   controls.update()
   renderer.render(scene, camera)
 }
+
+function changeCursor(state: string) {
+  const el = unref(sceneWrapper)
+  if (el.classList.contains('model-viewport')) {
+    el.style.cursor = state
+  }
+}
 </script>
 
 <style lang="scss" scoped>
 #scene-wrapper {
   width: 100%;
   height: 100%;
+
+  &.model-viewport {
+    cursor: grab;
+  }
 }
 #spinner {
   background-color: var(--oc-color-background-hover);
-}
-#spinner > div {
-  width: unset;
-  height: unset;
+  & > div {
+    width: unset;
+    height: unset;
+  }
 }
 </style>
