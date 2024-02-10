@@ -8,8 +8,7 @@
       <AppLoadingSpinner />
       <label class="oc-p-s">{{ loadingProgress }}%</label>
     </div>
-    <div v-else-if="!loadingModel && !hasError" id="scene-container" />
-    <div v-else>
+    <div v-else-if="hasError">
       <NoContentMessage icon="file-warning">
         <template #message>
           <span>Something went wrong. Cannot render the model</span>
@@ -69,7 +68,6 @@ onMounted(() => {
     renderer.setSize(offsetWidth, offsetHeight)
     renderer.toneMapping = ACESFilmicToneMapping
     renderer.toneMappingExposure = 1.2
-    unref(sceneWrapper).appendChild(renderer.domElement)
 
     // camera controls
     controls = new OrbitControls(camera, renderer.domElement)
@@ -119,7 +117,7 @@ function renderModel() {
       scene.add(modelScene)
 
       loadingModel.value = false
-
+      unref(sceneWrapper).appendChild(renderer.domElement)
       render()
     },
     (xhr) => {
