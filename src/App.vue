@@ -105,6 +105,7 @@ const hasError = ref<boolean>(false)
 const loadingProgress = ref<number>(0)
 const isFullScreenModeActivated = ref<boolean>(false)
 const activeIndex = ref<number>(0)
+const animationId = ref<number | undefined>()
 
 // =====================
 // lifecycle hooks
@@ -146,6 +147,7 @@ onBeforeUnmount(() => {
   scene.traverse((obj) => {
     scene.remove(obj)
   })
+  cancelAnimationFrame(unref(animationId))
   renderer.dispose()
 })
 
@@ -220,7 +222,7 @@ function renderModel() {
   )
 }
 function render(animStartTime: number) {
-  requestAnimationFrame(() => render(animStartTime))
+  animationId.value = requestAnimationFrame(() => render(animStartTime))
   const elapsedTime = (Date.now() - animStartTime) / 1000
   if (elapsedTime < animTimeoutSec) {
     camera.position.x -= iniCamZPosition * 0.01
