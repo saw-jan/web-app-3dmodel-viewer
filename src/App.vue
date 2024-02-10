@@ -302,6 +302,7 @@ function resetModelPosition() {
 #scene-wrapper {
   width: 100%;
   height: 100%;
+  background-color: var(--oc-color-background-default);
 
   &.model-viewport {
     cursor: grab;
