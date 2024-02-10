@@ -88,6 +88,7 @@ const scene: Scene = new Scene()
 let iniCamPosition: Vector3 | null = null
 let iniCamZPosition: number = 0
 const iniCamRotation: Euler = new Euler(0, 0, 0)
+const animTimeoutSec = 2
 
 // =====================
 // props
@@ -205,7 +206,7 @@ function renderModel() {
 
       loadingModel.value = false
       unref(sceneWrapper).appendChild(renderer.domElement)
-      render()
+      render(Date.now())
     },
     (xhr) => {
       const downloaded = Math.floor((xhr.loaded / xhr.total) * 100)
@@ -218,8 +219,13 @@ function renderModel() {
     }
   )
 }
-function render() {
-  requestAnimationFrame(render)
+function render(animStartTime: number) {
+  requestAnimationFrame(() => render(animStartTime))
+  const elapsedTime = (Date.now() - animStartTime) / 1000
+  if (elapsedTime < animTimeoutSec) {
+    camera.position.x -= iniCamZPosition * 0.01
+    camera.position.z -= iniCamZPosition * 0.01
+  }
   controls.update()
   renderer.render(scene, camera)
 }
