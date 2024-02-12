@@ -4,11 +4,11 @@
       class="oc-background-brand oc-p-s oc-width-large oc-flex oc-flex-middle oc-flex-center oc-flex-around preview-controls-action-bar"
     >
       <oc-button
-        v-oc-tooltip="previousDescription"
+        v-oc-tooltip="toolTip.previousDescription"
         class="preview-controls-previous"
         appearance="raw-inverse"
         variation="brand"
-        :aria-label="previousDescription"
+        :aria-label="toolTip.previousDescription"
         @click="$emit('togglePrevious')"
       >
         <oc-icon size="large" name="arrow-drop-left" variation="inherit" />
@@ -18,24 +18,28 @@
         <span class="oc-invisible-sr" v-text="screenreaderFileCount" />
       </p>
       <oc-button
-        v-oc-tooltip="nextDescription"
+        v-oc-tooltip="toolTip.nextDescription"
         class="preview-controls-next"
         appearance="raw-inverse"
         variation="brand"
-        :aria-label="nextDescription"
+        :aria-label="toolTip.nextDescription"
         @click="$emit('toggleNext')"
       >
         <oc-icon size="large" name="arrow-drop-right" variation="inherit" />
       </oc-button>
       <oc-button
         v-oc-tooltip="
-          isFullScreenModeActivated ? exitFullScreenDescription : enterFullScreenDescription
+          isFullScreenModeActivated
+            ? toolTip.exitFullScreenDescription
+            : toolTip.enterFullScreenDescription
         "
         class="preview-controls-fullscreen"
         appearance="raw-inverse"
         variation="brand"
         :aria-label="
-          isFullScreenModeActivated ? exitFullScreenDescription : enterFullScreenDescription
+          isFullScreenModeActivated
+            ? toolTip.exitFullScreenDescription
+            : toolTip.enterFullScreenDescription
         "
         @click="$emit('toggleFullScreen')"
       >
@@ -46,11 +50,11 @@
         />
       </oc-button>
       <oc-button
-        v-oc-tooltip="resetDescription"
+        v-oc-tooltip="toolTip.resetDescription"
         class="preview-controls-reset"
         appearance="raw-inverse"
         variation="brand"
-        :aria-label="resetDescription"
+        :aria-label="toolTip.resetDescription"
         @click="$emit('resetPosition')"
       >
         <oc-icon fill-type="line" name="refresh" variation="inherit" />
@@ -58,45 +62,49 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-import { computed, defineComponent, PropType } from 'vue'
+<script setup lang="ts">
+import { computed, PropType } from 'vue'
 import { Resource } from '@ownclouders/web-client/src'
 
-export default defineComponent({
-  name: 'MediaControls',
-  props: {
-    files: {
-      type: Array as PropType<Resource[]>,
-      required: true
-    },
-    activeIndex: {
-      type: Number,
-      required: true
-    },
-    isFullScreenModeActivated: {
-      type: Boolean,
-      default: false
-    }
-  },
-  emits: ['toggleFullScreen', 'toggleNext', 'togglePrevious', 'resetPosition'],
-  setup(props, { emit }) {
-    const ariaHiddenFileCount = computed(() => {
-      return `${(props.activeIndex + 1).toString()} of ${props.files.length.toString()}`
-    })
-    const screenreaderFileCount = computed(() => {
-      return `Media file ${(props.activeIndex + 1).toString()} of ${props.files.length.toString()}`
-    })
+const toolTip = {
+  enterFullScreenDescription: 'Enter full screen mode',
+  exitFullScreenDescription: 'Exit full screen mode',
+  resetDescription: 'Reset model position',
+  previousDescription: 'Show previous model',
+  nextDescription: 'Show next model'
+}
 
-    return {
-      screenreaderFileCount,
-      ariaHiddenFileCount,
-      enterFullScreenDescription: 'Enter full screen mode',
-      exitFullScreenDescription: 'Exit full screen mode',
-      resetDescription: 'Reset model position',
-      previousDescription: 'Show previous model',
-      nextDescription: 'Show next model'
-    }
+// =====================
+// props
+// =====================
+const { files, activeIndex, isFullScreenModeActivated } = defineProps({
+  files: {
+    type: Array as PropType<Resource[]>,
+    required: true
+  },
+  activeIndex: {
+    type: Number,
+    required: true
+  },
+  isFullScreenModeActivated: {
+    type: Boolean,
+    default: false
   }
+})
+
+// =====================
+// emits
+// =====================
+defineEmits(['toggleFullScreen', 'toggleNext', 'togglePrevious', 'resetPosition'])
+
+// =====================
+// computed properties
+// =====================
+const ariaHiddenFileCount = computed(() => {
+  return `${(activeIndex + 1).toString()} of ${files.length.toString()}`
+})
+const screenreaderFileCount = computed(() => {
+  return `3D model file ${(activeIndex + 1).toString()} of ${files.length.toString()}`
 })
 </script>
 
