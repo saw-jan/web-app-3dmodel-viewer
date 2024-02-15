@@ -4,6 +4,16 @@
 
 It is an extension for [ownCloud web](https://github.com/owncloud/web) for viewing 3D files. Currently, it can only open `.glb` file format.
 
+## Docker Image
+
+This extension is available as docker image: [sawjan/web-app-3dmodel-viewer](https://hub.docker.com/r/sawjan/web-app-3dmodel-viewer/tags)
+
+Run the extension container with:
+
+```bash
+docker run --rm -p3000:80 sawjan/web-app-3dmodel-viewer
+```
+
 ## Build and Run
 
 1. Install the dependencies
