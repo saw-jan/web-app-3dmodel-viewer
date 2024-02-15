@@ -14,3 +14,5 @@ WORKDIR /usr/share/nginx/html
 
 COPY --from=BUILD_STAGE /extension/dist ./
 COPY ["./dev/nginx.conf", "/etc/nginx/conf.d/default.conf"]
+
+EXPOSE 80
