@@ -77,7 +77,7 @@ const toolTip = {
 // =====================
 // props
 // =====================
-const { files, activeIndex, isFullScreenModeActivated } = defineProps({
+const props = defineProps({
   files: {
     type: Array as PropType<Resource[]>,
     required: true
@@ -101,10 +101,10 @@ defineEmits(['toggleFullScreen', 'toggleNext', 'togglePrevious', 'resetPosition'
 // computed properties
 // =====================
 const ariaHiddenFileCount = computed(() => {
-  return `${(activeIndex + 1).toString()} of ${files.length.toString()}`
+  return `${(props.activeIndex + 1).toString()} of ${props.files.length.toString()}`
 })
 const screenreaderFileCount = computed(() => {
-  return `3D model file ${(activeIndex + 1).toString()} of ${files.length.toString()}`
+  return `3D model file ${(props.activeIndex + 1).toString()} of ${props.files.length.toString()}`
 })
 </script>
 
