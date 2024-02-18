@@ -9,9 +9,7 @@ export default defineWebApplication({
       {
         name: appId,
         path: '/:driveAliasAndItem(.*)?',
-        component: AppWrapperRoute(App, {
-          applicationId: appId
-        }),
+        component: App,
         meta: {
           authContext: 'hybrid',
           patchCleanPath: true

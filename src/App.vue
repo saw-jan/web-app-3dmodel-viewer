@@ -66,7 +66,9 @@ import {
   sortHelper,
   createFileRouteOptions,
   useRoute,
-  useRouter
+  useRouter,
+  useAppFileHandling,
+  useClientService
 } from '@ownclouders/web-pkg'
 import { Resource } from '@ownclouders/web-client/src'
 import PreviewControls from './components/PreviewControls.vue'
@@ -76,9 +78,8 @@ const environment = new URL('./assets/warehouse_1k.hdr', import.meta.url).href
 const router = useRouter()
 const route = useRoute()
 const contextRouteQuery = useRouteQuery('contextRouteQuery')
-const appDefaults = useAppDefaults({ applicationId: '3dmodel-viewer' })
-// Todo: 'activeFiles' only contains current file
-const { activeFiles, currentFileContext } = appDefaults
+const { getUrlForResource } = useAppFileHandling({ clientService: useClientService() })
+const { activeFiles, currentFileContext } = useAppDefaults({ applicationId: '3dmodel-viewer' })
 
 const supportExtensions = ['glb']
 
@@ -91,11 +92,6 @@ const iniCamRotation: Euler = new Euler(0, 0, 0)
 const animTimeoutSec = 2
 
 // =====================
-// props
-// =====================
-const props = defineProps({ url: String })
-
-// =====================
 // states
 // =====================
 const sceneWrapper = ref<HTMLElement | undefined>()
@@ -106,11 +102,14 @@ const loadingProgress = ref<number>(0)
 const isFullScreenModeActivated = ref<boolean>(false)
 const activeIndex = ref<number>(0)
 const animationId = ref<number | undefined>()
+const url = ref<string>()
+const currentModel = ref()
 
 // =====================
 // lifecycle hooks
 // =====================
 onMounted(async () => {
+  await updateUrl()
   if (unref(hasWebGLSupport)) {
     const { offsetWidth, offsetHeight } = unref(sceneWrapper)
 
@@ -175,13 +174,16 @@ const activeModelFile = computed(() => {
 // =====================
 // methods
 // =====================
+async function updateUrl() {
+  url.value = await getUrlForResource(unref(currentFileContext).space, unref(activeModelFile))
+}
 async function loadEnvironment() {
   const texture = await new RGBELoader().loadAsync(environment)
   texture.mapping = EquirectangularReflectionMapping
   scene.environment = texture
 }
 async function renderModel() {
-  const model = await new GLTFLoader().loadAsync(props.url, (xhr) => {
+  const model = await new GLTFLoader().loadAsync(unref(url), (xhr) => {
     const downloaded = Math.floor((xhr.loaded / xhr.total) * 100)
     if (downloaded % 5 === 0) {
       loadingProgress.value = downloaded
@@ -195,7 +197,7 @@ async function renderModel() {
 
   // direct camera at model
   camera.position.copy(iniCamPosition)
-  iniCamZPosition += box.getSize(new Vector3()).length() + 1
+  iniCamZPosition = box.getSize(new Vector3()).length() + 1
   camera.position.z = iniCamZPosition
   camera.lookAt(iniCamPosition)
 
@@ -204,6 +206,7 @@ async function renderModel() {
   scene.add(modelScene)
 
   loadingModel.value = false
+  currentModel.value = modelScene
   unref(sceneWrapper).appendChild(renderer.domElement)
   render(Date.now())
 }
@@ -216,6 +219,16 @@ function render(animStartTime: number) {
   }
   controls.update()
   renderer.render(scene, camera)
+}
+async function renderNewModel() {
+  cancelAnimationFrame(unref(animationId))
+  scene.remove(scene.getObjectByName(unref(currentModel).name))
+
+  await updateUrl()
+
+  loadingModel.value = true
+  hasError.value = false
+  await renderModel()
 }
 function cleanup3dScene() {
   scene.traverse((obj) => {
@@ -245,29 +258,31 @@ function updateLocalHistory() {
     query: { ...unref(route).query, ...query }
   })
 }
-function next() {
-  if (!isModelReady) {
+async function next() {
+  if (!unref(isModelReady)) {
     return
   }
   if (unref(activeIndex) + 1 >= unref(modelFiles).length) {
     activeIndex.value = 0
-    updateLocalHistory()
-    return
+  } else {
+    activeIndex.value++
   }
-  activeIndex.value++
+
   updateLocalHistory()
+  await renderNewModel()
 }
-function prev() {
-  if (!isModelReady) {
+async function prev() {
+  if (!unref(isModelReady)) {
     return
   }
   if (unref(activeIndex) === 0) {
     activeIndex.value = unref(modelFiles).length - 1
-    updateLocalHistory()
-    return
+  } else {
+    activeIndex.value--
   }
-  activeIndex.value--
+
   updateLocalHistory()
+  await renderNewModel()
 }
 function toggleFullscreenMode() {
   const activateFullscreen = !unref(isFullScreenModeActivated)
