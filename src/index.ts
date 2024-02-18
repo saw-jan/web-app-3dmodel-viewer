@@ -23,7 +23,7 @@ export default defineWebApplication({
       appInfo: {
         name: '3D Model Viewer',
         id: appId,
-        icon: 'file-settings', // Todo: change the icon
+        icon: 'resource-type-graphic',
         iconFillType: 'fill',
         iconColor: '#86C540',
         extensions: [
