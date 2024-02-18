@@ -7,20 +7,20 @@
     @mousedown="changeCursor('grabbing')"
     @mouseup="changeCursor('grab')"
   >
-    <div
-      v-if="!isModelReady"
-      id="spinner"
-      class="oc-flex oc-flex-column oc-flex-middle oc-flex-center oc-height-1-1 oc-width-1-1"
-    >
-      <AppLoadingSpinner />
-      <label class="oc-p-s">{{ loadingProgress }}%</label>
-    </div>
-    <div v-else-if="hasError">
+    <div v-if="hasError">
       <NoContentMessage icon="file-warning">
         <template #message>
           <span>Something went wrong. Cannot render the model</span>
         </template>
       </NoContentMessage>
+    </div>
+    <div
+      v-else-if="!isModelReady"
+      id="spinner"
+      class="oc-flex oc-flex-column oc-flex-middle oc-flex-center oc-height-1-1 oc-width-1-1"
+    >
+      <AppLoadingSpinner />
+      <label class="oc-p-s">{{ loadingProgress }}%</label>
     </div>
     <PreviewControls
       class="oc-position-absolute oc-position-bottom-center"
@@ -110,7 +110,7 @@ const animationId = ref<number | undefined>()
 // =====================
 // lifecycle hooks
 // =====================
-onMounted(() => {
+onMounted(async () => {
   if (unref(hasWebGLSupport)) {
     const { offsetWidth, offsetHeight } = unref(sceneWrapper)
 
@@ -127,28 +127,18 @@ onMounted(() => {
     controls.minDistance = 1
     controls.maxDistance = 100
 
-    // add environment texture
-    new RGBELoader().load(
-      environment,
-      (texture) => {
-        texture.mapping = EquirectangularReflectionMapping
-        scene.environment = texture
-
-        renderModel()
-      },
-      (xhr) => {}, // onProgress
-      () => {
-        hasError.value = true
-      }
-    )
+    // load environment texture
+    try {
+      await loadEnvironment()
+      await renderModel()
+    } catch (e) {
+      cleanup3dScene()
+      hasError.value = true
+    }
   }
 })
 onBeforeUnmount(() => {
-  scene.traverse((obj) => {
-    scene.remove(obj)
-  })
-  cancelAnimationFrame(unref(animationId))
-  renderer.dispose()
+  cleanup3dScene()
 })
 
 // =====================
@@ -185,41 +175,37 @@ const activeModelFile = computed(() => {
 // =====================
 // methods
 // =====================
-function renderModel() {
-  const loader = new GLTFLoader()
-  loader.load(
-    props.url,
-    (model) => {
-      const modelScene = model.scene
-
-      // model size
-      const box = new Box3().setFromObject(modelScene)
-      iniCamPosition = box.getCenter(new Vector3())
-
-      // direct camera at model
-      camera.position.copy(iniCamPosition)
-      iniCamZPosition += box.getSize(new Vector3()).length() + 1
-      camera.position.z = iniCamZPosition
-      camera.lookAt(iniCamPosition)
-
-      // center model
-      modelScene.position.sub(iniCamPosition)
-      scene.add(modelScene)
-
-      loadingModel.value = false
-      unref(sceneWrapper).appendChild(renderer.domElement)
-      render(Date.now())
-    },
-    (xhr) => {
-      const downloaded = Math.floor((xhr.loaded / xhr.total) * 100)
-      if (downloaded % 5 === 0) {
-        loadingProgress.value = downloaded
-      }
-    },
-    () => {
-      hasError.value = true
+async function loadEnvironment() {
+  const texture = await new RGBELoader().loadAsync(environment)
+  texture.mapping = EquirectangularReflectionMapping
+  scene.environment = texture
+}
+async function renderModel() {
+  const model = await new GLTFLoader().loadAsync(props.url, (xhr) => {
+    const downloaded = Math.floor((xhr.loaded / xhr.total) * 100)
+    if (downloaded % 5 === 0) {
+      loadingProgress.value = downloaded
     }
-  )
+  })
+
+  const modelScene = model.scene
+  // model size
+  const box = new Box3().setFromObject(modelScene)
+  iniCamPosition = box.getCenter(new Vector3())
+
+  // direct camera at model
+  camera.position.copy(iniCamPosition)
+  iniCamZPosition += box.getSize(new Vector3()).length() + 1
+  camera.position.z = iniCamZPosition
+  camera.lookAt(iniCamPosition)
+
+  // center model
+  modelScene.position.sub(iniCamPosition)
+  scene.add(modelScene)
+
+  loadingModel.value = false
+  unref(sceneWrapper).appendChild(renderer.domElement)
+  render(Date.now())
 }
 function render(animStartTime: number) {
   animationId.value = requestAnimationFrame(() => render(animStartTime))
@@ -230,6 +216,13 @@ function render(animStartTime: number) {
   }
   controls.update()
   renderer.render(scene, camera)
+}
+function cleanup3dScene() {
+  scene.traverse((obj) => {
+    scene.remove(obj)
+  })
+  cancelAnimationFrame(unref(animationId))
+  renderer.dispose()
 }
 function changeCursor(state: string) {
   const el = unref(sceneWrapper)
