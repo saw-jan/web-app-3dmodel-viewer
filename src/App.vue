@@ -291,10 +291,12 @@ function toggleFullscreenMode() {
   }
 }
 function resetModelPosition() {
-  camera.position.copy(iniCamPosition)
-  camera.position.z = iniCamZPosition
-  camera.rotation.copy(iniCamRotation)
-  camera.lookAt(iniCamPosition)
+  if (unref(isModelReady)) {
+    camera.position.copy(iniCamPosition)
+    camera.position.z = iniCamZPosition
+    camera.rotation.copy(iniCamRotation)
+    camera.lookAt(iniCamPosition)
+  }
 }
 </script>
 
