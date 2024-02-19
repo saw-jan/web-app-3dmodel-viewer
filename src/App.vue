@@ -89,7 +89,7 @@ const router = useRouter()
 const route = useRoute()
 const contextRouteQuery = useRouteQuery('contextRouteQuery')
 const { getUrlForResource } = useAppFileHandling({ clientService: useClientService() })
-const { activeFiles, currentFileContext, closeApp } = useAppDefaults({
+const { activeFiles, currentFileContext, closeApp, loadFolderForFileContext } = useAppDefaults({
   applicationId: '3dmodel-viewer'
 })
 
@@ -119,8 +119,8 @@ const currentModel = ref()
 // lifecycle hooks
 // =====================
 onMounted(async () => {
-  setActiveModel(unref(currentFileContext).driveAliasAndItem)
-  await updateUrl()
+  await loadFolderForFileContext(unref(currentFileContext))
+  await setActiveModel(unref(currentFileContext).driveAliasAndItem)
 
   if (unref(hasWebGLSupport)) {
     const { offsetWidth, offsetHeight } = unref(sceneWrapper)
@@ -255,13 +255,14 @@ function changeCursor(state: string) {
     el.style.cursor = state
   }
 }
-function setActiveModel(driveAliasAndItem: string) {
+async function setActiveModel(driveAliasAndItem: string) {
   for (let i = 0; i < unref(modelFiles).length; i++) {
     if (
       unref(unref(currentFileContext).space)?.getDriveAliasAndItem(unref(modelFiles)[i]) ===
       driveAliasAndItem
     ) {
       activeIndex.value = i
+      await updateUrl()
       return
     }
   }
