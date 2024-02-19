@@ -119,7 +119,9 @@ const currentModel = ref()
 // lifecycle hooks
 // =====================
 onMounted(async () => {
+  setActiveModel(unref(currentFileContext).driveAliasAndItem)
   await updateUrl()
+
   if (unref(hasWebGLSupport)) {
     const { offsetWidth, offsetHeight } = unref(sceneWrapper)
 
@@ -177,8 +179,8 @@ const modelFiles = computed<Resource[]>(() => {
 
   return sortHelper(files, [{ name: unref(sortBy) }], unref(sortBy), unref(sortDir))
 })
-const pageTitle = computed(() => `Preview for ${unref(activeModelFile)?.name}`)
 const activeModelFile = computed(() => unref(modelFiles)[unref(activeIndex)])
+const pageTitle = computed(() => `Preview for ${unref(activeModelFile)?.name}`)
 const fileId = computed(() => unref(currentFileContext).itemId)
 
 // =====================
@@ -251,6 +253,17 @@ function changeCursor(state: string) {
   const el = unref(sceneWrapper)
   if (el.classList.contains('model-viewport')) {
     el.style.cursor = state
+  }
+}
+function setActiveModel(driveAliasAndItem: string) {
+  for (let i = 0; i < unref(modelFiles).length; i++) {
+    if (
+      unref(unref(currentFileContext).space)?.getDriveAliasAndItem(unref(modelFiles)[i]) ===
+      driveAliasAndItem
+    ) {
+      activeIndex.value = i
+      return
+    }
   }
 }
 function updateLocalHistory() {
