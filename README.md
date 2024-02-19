@@ -6,6 +6,7 @@ It is an extension for [ownCloud web](https://github.com/owncloud/web) for viewi
 
 ## Feature Highlights ✨
 
+- Supported formats: [`.glb`]
 - Zoom/Rotate model
 - Fullscreen view
 - Navigate between model files
