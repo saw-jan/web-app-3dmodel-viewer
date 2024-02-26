@@ -59,11 +59,11 @@ import {
   EquirectangularReflectionMapping,
   Box3,
   Vector3,
-  Euler
+  Euler,
+  TextureLoader
 } from 'three'
 import WebGL from 'three/examples/jsm/capabilities/WebGL'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
-import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import {
   AppLoadingSpinner,
@@ -82,7 +82,7 @@ import {
 import { Resource } from '@ownclouders/web-client/src'
 import PreviewControls from './components/PreviewControls.vue'
 
-const environment = new URL('./assets/warehouse_1k.hdr', import.meta.url).href
+const environment = new URL('./assets/custom_light.jpg', import.meta.url).href
 const supportExtensions = ['glb']
 
 const router = useRouter()
@@ -190,7 +190,7 @@ async function updateUrl() {
   url.value = await getUrlForResource(unref(currentFileContext).space, unref(activeModelFile))
 }
 async function loadEnvironment() {
-  const texture = await new RGBELoader().loadAsync(environment)
+  const texture = await new TextureLoader().loadAsync(environment)
   texture.mapping = EquirectangularReflectionMapping
   scene.environment = texture
 }
