@@ -6,7 +6,7 @@ Feature: preview 3D model
   Background:
     Given the user has logged in with username "admin" and password "admin"
     And a 3D model (.glb file) has been uploaded
-    #should the filename be specified here?
+    # should the filename be specified here?
 
   Scenario: preview 3D model
     When the user opens the file in the 3D model viewer
@@ -40,4 +40,4 @@ Feature: preview 3D model
     # should the model be referred to by filename instead of "second 3D model"?
     When the user clicks on “Show previous model”
     Then the first 3D model will be displayed
-    # should the model be referred to by filename instead of "first 3D model"? 
+    # should the model be referred to by filename instead of "first 3D model"?
