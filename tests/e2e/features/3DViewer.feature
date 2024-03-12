@@ -5,7 +5,8 @@ Feature: preview 3D model
 
   Background:
     Given the user has logged in with username "admin" and password "admin"
-    And a 3D model (.glb file) has been uploaded
+    And the user has uploaded the following 3D models:
+      | mode1.glb |
     #should the filename be specified here?
 
   Scenario: preview 3D model
