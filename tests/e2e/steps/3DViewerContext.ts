@@ -5,7 +5,12 @@ const { expect } = require("@playwright/test");
 const url = 'http://localhost:9200'
 
 //define selectors
-
+const appTopBar = '.oc-app-top-bar'
+const appTopBarResourceName = '.oc-resource-name'
+const controlButtonPrev = '.preview-controls-previous'
+const controlButtonNext = '.preview-controls-next'
+const controlButtonFullscreen = '.preview-controls-fullscreen'
+const controlButtonReset = '. preview-controls-reset'
 
 #Scenario: preview 3D model
    Given('the user has logged in with username {string} and password {string}', function (string, string2) {
