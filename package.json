@@ -7,7 +7,8 @@
   "license": "AGPL-3.0",
   "scripts": {
     "build": "pnpm vite build",
-    "build:w": "pnpm vite build -w -m development"
+    "build:w": "pnpm vite build -w -m development",
+    "test:e2e": "cucumber-js --require cucumber.conf.js --require tests/e2e/steps/**/*.js --format @cucumber/pretty-formatter"
   },
   "keywords": [
     "owncloud",
