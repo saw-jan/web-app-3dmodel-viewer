@@ -12,29 +12,33 @@ Feature: preview 3D model
 
         # preview 3D model
         When the user opens the file "model1.glb" in the 3D model viewer
-        Then the 3D model will be display in the viewport
-        And the file name "model1.glb" will be shown in the topbar
+        Then the 3D model should be display in the viewport
+        And the file name "model1.glb" should be shown in the topbar
 
         # toggle between standard and fullscreen mode
-        When the user clicks on “Enter full screen mode”
-        Then the 3D model will be displayed in full screen mode
-        And the topbar won't be visible
-        When the user clicks on “Exit full screen mode”
-        Then the 3D model will be display in standard mode
-        And the file name "model1.glb" will be shown in the topbar
+        When the user selects "Enter full screen mode"
+        # should we use text that is on labels at all or just describe the action?
+        # reasoning: label text might change or be different if the UI is set to a different language...
+        Then the 3D model should be displayed in full screen mode
+        And the topbar shouldn't be visible
+        When the user selects "Exit full screen mode"
+        Then the 3D model should be display in standard mode
+        And the file name "model1.glb" should be shown in the topbar
 
         # rotate, zoom and reset 3D model
         When the user rotates the model using the mouse
+        # using the mouse is currently the only supported mode for manipulating the model,
+        # should this be specified here or just say "when the user rotates the model"?
         And the user zooms into the model using the mouse
-        Then the size and position of the 3D model will be changed accordingly
-        When the user clicks on “Reset”
-        Then the 3D model will be display in the default size and position
+        Then the size and position of the 3D model should be changed accordingly
+        When the user selects "Reset"
+        Then the 3D model should be display in the default size and position
 
         # show preview/next model
         When the user opens the file "model1.glb" in the 3D model viewer
-        And the user clicks on “Show next model”
-        Then the 3D model "model2.glb" will be displayed
-        And the file name "model2.glb" will be shown in the topbar
-        When the user clicks on “Show previous model”
-        Then the 3D model "model1.glb" will be displayed
-        And the file name "model1.glb" will be shown in the topbar
+        And the user selects "Show next model"
+        Then the 3D model "model2.glb" should be displayed
+        And the file name "model2.glb" should be shown in the topbar
+        When the user selects "Show previous model"
+        Then the 3D model "model1.glb" should be displayed
+        And the file name "model1.glb" should be shown in the topbar
