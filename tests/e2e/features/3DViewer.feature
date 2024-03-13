@@ -18,7 +18,7 @@ Feature: preview 3D model
         # toggle between standard and fullscreen mode
         When the user clicks on “Enter full screen mode”
         Then the 3D model will be displayed in full screen mode
-        And the topbar won’t be visible
+        And the topbar won't be visible
         When the user clicks on “Exit full screen mode”
         Then the 3D model will be display in standard mode
         And the file name "model1.glb" will be shown in the topbar
