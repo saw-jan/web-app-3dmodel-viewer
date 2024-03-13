@@ -26,10 +26,8 @@ Feature: preview 3D model
         And the file name "model1.glb" should be shown in the topbar
 
         # rotate, zoom and reset 3D model
-        When the user rotates the model using the mouse
-        # using the mouse is currently the only supported mode for manipulating the model,
-        # should this be specified here or just say "when the user rotates the model"?
-        And the user zooms into the model using the mouse
+        When the user rotates the model
+        And the user zooms into the model
         Then the size and position of the 3D model should be changed accordingly
         When the user selects "Reset"
         Then the 3D model should be display in the default size and position
