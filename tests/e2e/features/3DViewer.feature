@@ -22,6 +22,7 @@ Feature: preview 3D model
         Then the 3D model should be displayed in full screen mode
         And the topbar shouldn't be visible
         When the user selects "Exit full screen mode"
+        # do we need a differentiation for exit by using the exit control element and exit by "ESC" key?
         Then the 3D model should be display in standard mode
         And the file name "model1.glb" should be shown in the topbar
 
