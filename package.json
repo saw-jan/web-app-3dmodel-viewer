@@ -8,7 +8,7 @@
   "scripts": {
     "build": "pnpm vite build",
     "build:w": "pnpm vite build -w -m development",
-    "test:e2e": "cucumber-js --require cucumber.conf.js --require tests/e2e/steps/**/*.js --format @cucumber/pretty-formatter"
+    "test:e2e": "NODE_TLS_REJECT_UNAUTHORIZED=0 TS_NODE_PROJECT=./tests/e2e/tsconfig.json cucumber-js"
   },
   "keywords": [
     "owncloud",
@@ -29,8 +29,11 @@
     "@vitejs/plugin-vue": "^4.0.0",
     "playwright": "^1.41.2",
     "three": "^0.160.0",
+    "ts-node": "^10.9.2",
     "vite": "^5.0.12",
-    "vue": "^3.4.15"
+    "vue": "^3.4.15",
+    "vue3-gettext": "2.5.0-alpha.1",
+    "xml-js": "^1.6.11"
   },
   "peerDependencies": {
     "@ownclouders/web-client": "0.0.1",
