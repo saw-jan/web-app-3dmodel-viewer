@@ -6,8 +6,8 @@
     <div class="oc-flex oc-width-1-1 oc-height-1-1">
       <div
         v-if="hasWebGLSupport"
-        ref="sceneWrapper"
         id="scene-wrapper"
+        ref="sceneWrapper"
         :class="isModelReady ? 'model-viewport' : ''"
         @mousedown="changeCursor('grabbing')"
         @mouseup="changeCursor('grab')"
