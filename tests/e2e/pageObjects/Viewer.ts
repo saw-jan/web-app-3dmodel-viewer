@@ -1,10 +1,10 @@
 import { Page, expect } from '@playwright/test'
-// import { state } from '../hooks'
+import { state } from '../hooks'
 import { config } from '../config.js'
 // import util from 'util' // check import
 
 export class Viewer {
-    page: Page = state.page // TODO check how this gets defined
+    page: Page = state.page
     elements: Readonly<Record<string, string>> = {
         userNameSelector : '#oc-login-username',
         passwordSelector : '#oc-login-password',
