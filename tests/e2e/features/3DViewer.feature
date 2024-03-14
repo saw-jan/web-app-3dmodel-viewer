@@ -35,8 +35,8 @@ Feature: preview 3D model
 
         # show preview/next model
         When the user selects "Show next model"
-        Then the 3D model "model2.glb" should be displayed
+        Then the 3D model "model2.glb" should be displayed in the viewport
         And the file name "model2.glb" should be shown in the topbar
         When the user selects "Show previous model"
-        Then the 3D model "model1.glb" should be displayed
+        Then the 3D model "model1.glb" should be displayed in the viewport
         And the file name "model1.glb" should be shown in the topbar
