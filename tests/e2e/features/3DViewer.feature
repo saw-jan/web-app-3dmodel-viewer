@@ -34,8 +34,7 @@ Feature: preview 3D model
         Then the 3D model should be display in the default size and position
 
         # show preview/next model
-        When the user opens the file "model1.glb" in the 3D model viewer
-        And the user selects "Show next model"
+        When the user selects "Show next model"
         Then the 3D model "model2.glb" should be displayed
         And the file name "model2.glb" should be shown in the topbar
         When the user selects "Show previous model"
