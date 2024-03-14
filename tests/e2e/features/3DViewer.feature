@@ -16,13 +16,10 @@ Feature: preview 3D model
         And the file name "model1.glb" should be shown in the topbar
 
         # toggle between standard and fullscreen mode
-        When the user selects "Enter full screen mode"
-        # should we use text that is on labels at all or just describe the action?
-        # reasoning: label text might change or be different if the UI is set to a different language...
-        Then the 3D model should be displayed in full screen mode
+        When the user enters fullscreen mode
+        Then the 3D model should be displayed in fullscreen mode
         And the topbar should not be visible
-        When the user selects "Exit full screen mode"
-        # do we need a differentiation for exit by using the exit control element and exit by "ESC" key?
+        When the user exits fullscreen mode
         Then the 3D model should be display in standard mode
         And the file name "model1.glb" should be shown in the topbar
 
@@ -30,13 +27,13 @@ Feature: preview 3D model
         When the user rotates the model
         And the user zooms into the model
         Then the size and position of the 3D model should be changed accordingly
-        When the user selects "Reset"
+        When the user resets the viewport
         Then the 3D model should be display in the default size and position
 
         # show preview/next model
-        When the user selects "Show next model"
+        When the user navigates to the next model
         Then the 3D model "model2.glb" should be displayed in the viewport
         And the file name "model2.glb" should be shown in the topbar
-        When the user selects "Show previous model"
+        When the user navigates to the previous model
         Then the 3D model "model1.glb" should be displayed in the viewport
         And the file name "model1.glb" should be shown in the topbar
