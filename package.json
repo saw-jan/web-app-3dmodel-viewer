@@ -19,6 +19,7 @@
     "3d model"
   ],
   "devDependencies": {
+    "@babel/eslint-parser": "^7.23.10",
     "@ownclouders/extension-sdk": "0.0.5-alpha.2",
     "@ownclouders/prettier-config": "^0.0.1",
     "@types/three": "^0.161.2",
