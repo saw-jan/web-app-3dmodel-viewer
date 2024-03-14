@@ -20,7 +20,7 @@ Feature: preview 3D model
         # should we use text that is on labels at all or just describe the action?
         # reasoning: label text might change or be different if the UI is set to a different language...
         Then the 3D model should be displayed in full screen mode
-        And the topbar shouldn't be visible
+        And the topbar should not be visible
         When the user selects "Exit full screen mode"
         # do we need a differentiation for exit by using the exit control element and exit by "ESC" key?
         Then the 3D model should be display in standard mode
