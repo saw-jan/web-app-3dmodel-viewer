@@ -11,7 +11,7 @@ Feature: preview 3D model
             | model2.glb |
 
         # preview 3D model
-        When the user opens the file "model1.glb" in the 3D model viewer
+        When the user previews the file "model1.glb" in the 3D model viewer
         Then the 3D model should be display in the viewport
         And the file name "model1.glb" should be shown in the topbar
 
