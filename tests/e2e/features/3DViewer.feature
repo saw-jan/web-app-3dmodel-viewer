@@ -7,6 +7,7 @@ Feature: preview 3D model
     Scenario: preview 3D model
         Given the user has logged in with username "admin" and password "admin"
         And the user has uploaded the following 3D models:
+            | filename   |
             | model1.glb |
             | model2.glb |
 
