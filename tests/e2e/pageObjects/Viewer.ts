@@ -39,16 +39,52 @@ export class Viewer {
         await this.page.locator(this.elements.logoutSelector).click()
     }
 
-    async upload({ filename }): Promise<void> {
+    async uploadFile(filename: string): Promise<void> {
         await this.page.locator(this.elements.resourceUploadButton).click()
         await this.page.locator(this.elements.fileUploadInput).setInputFiles(`${config.assets}/${filename}`)
         await this.page.locator(this.elements.uploadInfoCloseButton).click()
+        // util
         // await this.page.locator(util.format(this.elements.resourceNameSelector, filename)).waitFor()
     }
 
-    async preview3DModel({ filename }): Promise<void> {
+    async previewFile(filename: string): Promise<void> {
         // await this.page.locator(util.format(this.elements.resourceNameSelector, filename)).click()
         // await expect(this.page.locator(this.elements.modelViewport)).toBeVisible()
-        // await expect(this.page.locator(util.format(this.elements.appbarResourceNameSelector, filename))).toBeVisible()
+    }
+    
+    async checkViewport(filename: string): Promise<void> {
+        await expect(this.page.locator(this.elements.modelViewport)).toBeVisible()
+    }
+
+    async checkFileName(filename: string): Promise<void> {
+        //await expect(this.page.locator(util.format(this.elements.appbarResourceNameSelector, filename))).toBeVisible()
+    }
+
+    async checkTopbarVisibility( shouldBeVisible: Boolean ): Promise<void> {
+        if (shouldBeVisible) {
+            await expect(this.page.locator(this.elements.appTopBar)).toBeVisible()
+            // maybe also check for existence of this element
+        }
+        else {
+            await expect(this.page.locator(this.elements.appTopBar)).not.toBeVisible()
+        }
+    }
+
+    async toggleFullscreenMode(): Promise<void> {
+        await this.page.locator(this.elements.controlButtonFullscreen).click()
+        // expect needed?
+        //await expect(this.page.locator(???)).toBeVisible()
+    }
+
+    async resetViewport(): Promise<void> {
+        await this.page.locator(this.elements.controlButtonReset).click()
+    }
+
+    async displayNextModel(): Promise<void> {
+        await this.page.locator(this.elements.controlButtonNext).click()
+    }
+
+    async displayPreviousModel(): Promise<void> {
+        await this.page.locator(this.elements.controlButtonPrev).click()
     }
 }
