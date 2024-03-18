@@ -1,6 +1,6 @@
 exports.config = {
     // environment
-    baseUrlOcis: process.env.BASE_URL_OCIS ?? 'https://host.docker.internal:9200',
+    baseUrlOcis: process.env.BASE_URL_OCIS ?? 'https://localhost:9200', // 'https://host.docker.internal:9200',
     assets: './tests/e2e/filesForUpload',
     adminUser: process.env.ADMIN_USERNAME || 'admin',
     adminPassword: process.env.ADMIN_PASSWORD || 'admin',
