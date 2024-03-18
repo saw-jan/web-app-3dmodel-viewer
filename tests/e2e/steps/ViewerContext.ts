@@ -3,16 +3,13 @@ import { state } from '../hooks'
 import { config } from '../config.js'
 
 import { Viewer } from '../pageObjects/Viewer'
-import { getUser } from '../userStore'
 
 
 Given('the user has logged in with username {string} and password {string}', async function(user: string, password: string): Promise<void> {
     const page = state.page
     const viewer = new Viewer()
     await page.goto(config.baseUrlOcis)
-    const stepUser = await getUser({user})
-    await viewer.login({ username: stepUser.displayName, password: stepUser.password })
-    //await viewer.login({ username: user, password: password })
+    await viewer.login({ username: user, password: password })
 })
 
 Given('the user has uploaded the following 3D models:', async function (filesForUpload: DataTable): Promise<void> {
