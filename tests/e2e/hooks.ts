@@ -1,8 +1,8 @@
 import { Before, BeforeAll, After, AfterAll, setDefaultTimeout } from '@cucumber/cucumber'
 import { Browser, chromium, Page } from '@playwright/test'
-// import axios from 'axios'
-// import join from 'join-path'
-// import { xml2js } from 'xml-js'
+import axios from 'axios'
+import join from 'join-path'
+import { xml2js } from 'xml-js'
 import { _ } from 'lodash'
 import { config } from './config.js'
 
@@ -34,13 +34,12 @@ AfterAll(async function (): Promise<void> {
 })
 
 After(async function (): Promise<void> {
-    // await deleteAllFiles()
-    // await emptyTrashbin()
+    await deleteAllFiles()
+    await emptyTrashbin()
     await state.page.close()
 })
 
-/*
-const sendRequest = async function({method, path}): Promise<any> {
+const sendRequest = async function({ method, path }): Promise<any> {
     const headers = {
         Authorization: `Basic ${Buffer.from(`${config.adminUser}:${config.adminPassword}`).toString('base64')}`,
     }
@@ -52,19 +51,19 @@ const sendRequest = async function({method, path}): Promise<any> {
 }
 
 const deleteAllFiles = async function(): Promise<void> {
-    const response = await sendRequest({method: 'PROPFIND', path: 'remote.php/dav/files/admin'})
+    const response = await sendRequest({ method: 'PROPFIND', path: 'remote.php/dav/files/admin' })
     const xmlResponse = response.data
-    const result = xml2js(xmlResponse, {compact:true})
+    const result = xml2js(xmlResponse, { compact: true })
     const resp = _.get(result, 'd:multistatus.d:response')
     const href = _.get(resp[1], 'd:href._text')
 
-    await sendRequest({method: 'DELETE', path: href})
+    await sendRequest({ method: 'DELETE', path: href })
 }
 
 const emptyTrashbin = async function(): Promise<void> {
-    await sendRequest({method: 'DELETE', path: 'remote.php/dav/trash-bin/admin'})
+    await sendRequest({ method: 'DELETE', path: 'remote.php/dav/trash-bin/admin' })
 }
-*/
+
 
 
 
