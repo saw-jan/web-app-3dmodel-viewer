@@ -1,4 +1,4 @@
-const {config} = require('./tests/e2e/config.js')
+const { config } = require('./tests/e2e/config.js')
 
 module.exports = {
     default: {
@@ -8,3 +8,6 @@ module.exports = {
         format: ["@cucumber/pretty-formatter"]
     }
 }
+
+
+// see https://github.com/cucumber/cucumber-js/blob/main/docs/configuration.md for documentation

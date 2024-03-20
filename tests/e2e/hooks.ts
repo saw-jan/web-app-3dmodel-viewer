@@ -51,6 +51,7 @@ const sendRequest = async function({ method, path }): Promise<any> {
 }
 
 const deleteAllFiles = async function(): Promise<void> {
+    // check path, it doesn't seem like this is deleting all files
     const response = await sendRequest({ method: 'PROPFIND', path: 'remote.php/dav/files/admin' })
     const xmlResponse = response.data
     const result = xml2js(xmlResponse, { compact: true })

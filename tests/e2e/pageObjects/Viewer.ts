@@ -18,7 +18,7 @@ export class Viewer {
         resourceNameSelector : '#files-space-table [data-test-resource-name="%s"]',
         appbarResourceNameSelector : '#app-top-bar-resource [data-test-resource-name="%s"]',
         uploadInfoCloseButton : '#close-upload-info-btn',
-        appTopBar : '.oc-app-top-bar',
+        appTopBar : '.oc-app-top-bar .oc-resource', // '.oc-app-top-bar',
         appTopBarResourceName : '.oc-resource-name',
         modelViewport : '#preview .model-viewport',
         modelViewportDescription : '#preview h1.oc-invisible-sr',
@@ -70,7 +70,7 @@ export class Viewer {
         await expect(appTopBarResourceName.replace(/(\r\n|\n|\r)/gm,'').trim()).toContain(filename)
     }
 
-    async checkTopbarVisibility( shouldBeVisible: Boolean ): Promise<void> {
+    async checkTopbarVisibility(shouldBeVisible: Boolean): Promise<void> {
         if (shouldBeVisible) {
             await expect(this.page.locator(this.elements.appTopBar)).toBeVisible()
         }
@@ -88,8 +88,8 @@ export class Viewer {
     }
 
     async checkStandardDisplayMode(): Promise<void> {
-    // todo: figure out how to test this...
-    // maybe again something with ::backdrop pseudo class?
+        // todo: figure out how to test this...
+        // maybe again something with ::backdrop pseudo class?
         await expect(true).toBe(true)
     }
 
@@ -112,7 +112,6 @@ export class Viewer {
     async modifyModel(): Promise<void> {
         // select viewport
         // move or wheel mouse interaction
-        //
 
         // await this.page.locator(this.elements.??).mouse.move()
         // mousewheel?
