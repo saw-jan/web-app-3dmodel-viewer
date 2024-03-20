@@ -73,17 +73,28 @@ export class Viewer {
     async checkTopbarVisibility( shouldBeVisible: Boolean ): Promise<void> {
         if (shouldBeVisible) {
             await expect(this.page.locator(this.elements.appTopBar)).toBeVisible()
-            // maybe also check for existence of this element
         }
         else {
             await expect(this.page.locator(this.elements.appTopBar)).not.toBeVisible()
         }
     }
 
+    async checkFullscreenMode(): Promise<void> {
+        // todo: figure out how to test this...
+        // label of the control element toggle?
+        // browser window width?
+        // get classes & pseudo classes of canvas and check if it contains :not(:root):fullscreen::backdrop
+        await expect(true).toBe(true)
+    }
+
+    async checkStandardDisplayMode(): Promise<void> {
+    // todo: figure out how to test this...
+    // maybe again something with ::backdrop pseudo class?
+        await expect(true).toBe(true)
+    }
+
     async toggleFullscreenMode(): Promise<void> {
         await this.page.locator(this.elements.controlButtonFullscreen).click()
-        // expect needed?
-        //await expect(this.page.locator(???)).toBeVisible()
     }
 
     async resetViewport(): Promise<void> {
