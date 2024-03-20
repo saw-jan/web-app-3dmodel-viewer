@@ -1,4 +1,4 @@
-import { AppWrapperRoute, defineWebApplication } from '@ownclouders/web-pkg'
+import { defineWebApplication } from '@ownclouders/web-pkg'
 import App from './App.vue'
 
 const appId = '3dmodel-viewer'

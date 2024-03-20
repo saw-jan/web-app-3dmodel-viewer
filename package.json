@@ -9,6 +9,7 @@
     "build": "pnpm vite build",
     "build:w": "pnpm vite build -w -m development",
     "test:e2e": "NODE_TLS_REJECT_UNAUTHORIZED=0 TS_NODE_PROJECT=./tests/e2e/tsconfig.json cucumber-js tests/e2e/features/3DViewer.feature"
+    "lint": "eslint './*.{js,ts}' '{src,tests}/**/*.{js,ts,vue}' --color"
   },
   "keywords": [
     "owncloud",
@@ -19,6 +20,7 @@
     "3d model"
   ],
   "devDependencies": {
+    "@babel/eslint-parser": "^7.23.10",
     "@cucumber/cucumber": "^10.3.1",
     "@cucumber/pretty-formatter": "^1.0.0",
     "@ownclouders/extension-sdk": "0.0.5-alpha.2",
@@ -26,8 +28,14 @@
     "@ownclouders/tsconfig": "0.0.5-alpha.1",
     "@playwright/test": "^1.41.2",
     "@types/three": "^0.161.2",
+    "@typescript-eslint/eslint-plugin": "^7.2.0",
     "@vitejs/plugin-vue": "^4.0.0",
     "axios": "^1.6.7",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier-vue": "^5.0.0",
+    "eslint-plugin-unused-imports": "^3.1.0",
+    "eslint-plugin-vue": "^9.23.0",
     "join-path": "^1.1.1",
     "lodash": "^4.17.21",
     "playwright": "^1.41.2",

@@ -1,3 +1,26 @@
+/* Use config from @ownclouders/tsconfig when the stable version is available
 {
   "extends": "@ownclouders/tsconfig"
+}
+*/
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "es2020",
+    "lib": ["ESNext", "es2020", "dom", "dom.iterable"],
+    "downlevelIteration": true,
+    "isolatedModules": true,
+    "strict": false,
+    "noImplicitThis": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true
+  },
+  "exclude": ["node_modules"],
+  "vueCompilerOptions": {
+    "target": 3
+  }
 }
