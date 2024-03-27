@@ -97,17 +97,6 @@ export class Viewer {
       'width',
       windowInnerWidth.toString() + 'px'
     )
-
-    /*
-    const positionValue = await this.page.locator(this.elements.modelViewportCanvas).first()
-      .evaluate(el =>  window.getComputedStyle(el, ':not(:root):fullscreen::backdrop').position)
-    const insetValue = await this.page.locator(this.elements.modelViewportCanvas).first()
-      .evaluate(el =>  window.getComputedStyle(el, ':not(:root):fullscreen::backdrop').inset)
-    console.log('get computed style for position & inset in fullscreen mode: ' + positionValue + ' / ' + insetValue)
-    */
-
-    //await expect(this.page.locator(this.elements.modelViewportWrapper)).toHaveClass('model-viewport')
-    //await expect(this.page.locator(this.elements.modelViewportWrapper)).toHaveClass(/backdrop/) // doesn't seem to work for pseudo classes
   }
 
   async checkStandardDisplayMode(): Promise<void> {
