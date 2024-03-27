@@ -89,8 +89,14 @@ export class Viewer {
     // modelViewportWrapper should have same size as browser window
     const windowInnerHeight = await this.page.evaluate(() => window.innerHeight)
     const windowInnerWidth = await this.page.evaluate(() => window.innerWidth)
-    await expect(this.page.locator(this.elements.modelViewportWrapper)).toHaveCSS('height', windowInnerHeight.toString() + 'px')
-    await expect(this.page.locator(this.elements.modelViewportWrapper)).toHaveCSS('width', windowInnerWidth.toString() + 'px')
+    await expect(this.page.locator(this.elements.modelViewportWrapper)).toHaveCSS(
+      'height',
+      windowInnerHeight.toString() + 'px'
+    )
+    await expect(this.page.locator(this.elements.modelViewportWrapper)).toHaveCSS(
+      'width',
+      windowInnerWidth.toString() + 'px'
+    )
 
     /*
     const positionValue = await this.page.locator(this.elements.modelViewportCanvas).first()
