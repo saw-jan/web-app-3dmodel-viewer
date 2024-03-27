@@ -22,6 +22,7 @@ export class Viewer {
     appTopBarResourceName: '.oc-resource-name',
     modelViewport: '#preview .model-viewport',
     modelViewportWrapper: '#preview #scene-wrapper',
+    modelViewportWrapperFullscreen: '#scene-wrapper:fullscreen',
     modelViewportDescription: '#preview h1.oc-invisible-sr',
     modelViewportCanvas: '#preview .model-viewport canvas',
     controlButtonPrev: '.preview-controls-previous',
@@ -97,11 +98,13 @@ export class Viewer {
       'width',
       windowInnerWidth.toString() + 'px'
     )
+    // alternative approach for testing this: fullscreen pseudo class exists
+    await expect(this.page.locator(this.elements.modelViewportWrapperFullscreen)).toBeVisible()
   }
 
   async checkStandardDisplayMode(): Promise<void> {
-    // todo: figure out how to test this...
-    await expect(true).toBe(true)
+    // fullscreen pseudo class is hidden (doesn't exist)
+    await expect(this.page.locator(this.elements.modelViewportWrapperFullscreen)).toBeHidden()
   }
 
   async toggleFullscreenMode(): Promise<void> {
@@ -122,6 +125,7 @@ export class Viewer {
 
   async modifyModel(): Promise<void> {
     // select viewport
+    // locator.focus()	Focus the element
     // move or wheel mouse interaction
     // await this.page.locator(this.elements.??).mouse.move()
     // mousewheel?
