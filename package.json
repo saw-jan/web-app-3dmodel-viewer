@@ -8,7 +8,7 @@
   "scripts": {
     "build": "pnpm vite build",
     "build:w": "pnpm vite build -w -m development",
-    "test:e2e": "NODE_TLS_REJECT_UNAUTHORIZED=0 TS_NODE_PROJECT=./tests/e2e/tsconfig.json cucumber-js tests/e2e/features/3DViewer.feature"
+    "test:e2e": "NODE_TLS_REJECT_UNAUTHORIZED=0 TS_NODE_PROJECT=./tests/e2e/tsconfig.json cucumber-js tests/e2e/features/3DViewer.feature",
     "lint": "eslint './*.{js,ts}' '{src,tests}/**/*.{js,ts,vue}' --color",
     "lint:fix": "pnpm lint --fix"
   },
