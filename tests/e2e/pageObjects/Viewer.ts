@@ -21,6 +21,7 @@ export class Viewer {
     appTopBar: '.oc-app-top-bar .oc-resource', // '.oc-app-top-bar',
     appTopBarResourceName: '.oc-resource-name',
     modelViewport: '#preview .model-viewport',
+    modelViewportWrapper: '#preview #scene-wrapper',
     modelViewportDescription: '#preview h1.oc-invisible-sr',
     modelViewportCanvas: '#preview .model-viewport canvas',
     controlButtonPrev: '.preview-controls-previous',
@@ -85,16 +86,26 @@ export class Viewer {
   }
 
   async checkFullscreenMode(): Promise<void> {
-    // todo: figure out how to test this...
-    // label of the control element toggle?
-    // browser window width?
-    // get classes & pseudo classes of canvas and check if it contains :not(:root):fullscreen::backdrop
-    await expect(true).toBe(true)
+    // modelViewportWrapper should have same size as browser window
+    const windowInnerHeight = await this.page.evaluate(() => window.innerHeight)
+    const windowInnerWidth = await this.page.evaluate(() => window.innerWidth)
+    await expect(this.page.locator(this.elements.modelViewportWrapper)).toHaveCSS('height', windowInnerHeight.toString() + 'px')
+    await expect(this.page.locator(this.elements.modelViewportWrapper)).toHaveCSS('width', windowInnerWidth.toString() + 'px')
+
+    /*
+    const positionValue = await this.page.locator(this.elements.modelViewportCanvas).first()
+      .evaluate(el =>  window.getComputedStyle(el, ':not(:root):fullscreen::backdrop').position)
+    const insetValue = await this.page.locator(this.elements.modelViewportCanvas).first()
+      .evaluate(el =>  window.getComputedStyle(el, ':not(:root):fullscreen::backdrop').inset)
+    console.log('get computed style for position & inset in fullscreen mode: ' + positionValue + ' / ' + insetValue)
+    */
+
+    //await expect(this.page.locator(this.elements.modelViewportWrapper)).toHaveClass('model-viewport')
+    //await expect(this.page.locator(this.elements.modelViewportWrapper)).toHaveClass(/backdrop/) // doesn't seem to work for pseudo classes
   }
 
   async checkStandardDisplayMode(): Promise<void> {
     // todo: figure out how to test this...
-    // maybe again something with ::backdrop pseudo class?
     await expect(true).toBe(true)
   }
 
