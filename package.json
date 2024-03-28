@@ -39,7 +39,6 @@
     "eslint-plugin-vue": "^9.23.0",
     "join-path": "^1.1.1",
     "lodash": "^4.17.21",
-    "playwright": "^1.41.2",
     "three": "^0.160.0",
     "ts-node": "^10.9.2",
     "vite": "^5.0.12",
