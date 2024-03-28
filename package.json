@@ -26,7 +26,6 @@
     "@cucumber/pretty-formatter": "^1.0.0",
     "@ownclouders/extension-sdk": "0.0.5-alpha.2",
     "@ownclouders/prettier-config": "^0.0.1",
-    "@ownclouders/tsconfig": "0.0.5-alpha.1",
     "@playwright/test": "^1.41.2",
     "@types/three": "^0.161.2",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
