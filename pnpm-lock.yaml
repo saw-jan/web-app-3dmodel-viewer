@@ -28,9 +28,6 @@ devDependencies:
   '@ownclouders/prettier-config':
     specifier: ^0.0.1
     version: 0.0.1
-  '@ownclouders/tsconfig':
-    specifier: 0.0.5-alpha.1
-    version: 0.0.5-alpha.1
   '@playwright/test':
     specifier: ^1.41.2
     version: 1.41.2
@@ -860,10 +857,6 @@ packages:
     resolution: {integrity: sha512-vTQ11OCFgUxPJxAAIcGk05KByZL6F2fmdoUCKVuyMspsGvap3H0KjCIHY5c+Gz390tBfZf6vsnuoJkhGOOBgQw==}
     dependencies:
       prettier: 2.8.8
-    dev: true
-
-  /@ownclouders/tsconfig@0.0.5-alpha.1:
-    resolution: {integrity: sha512-qM4PyZmAs6CI7aGhtIkXkU9Tp8a80MUjh7CF6S9jmhNXY67QSvGZ/zVvenIRFHW394Iu13BpV1J/rnIQ0dkeZw==}
     dev: true
 
   /@ownclouders/web-client@0.0.1(axios@1.6.7)(lodash-es@4.17.21):
