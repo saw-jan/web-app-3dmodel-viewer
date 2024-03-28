@@ -9,5 +9,4 @@ module.exports = {
     }
 }
 
-
 // see https://github.com/cucumber/cucumber-js/blob/main/docs/configuration.md for documentation
