@@ -30,7 +30,8 @@ export class Viewer {
     controlButtonReset: '. preview-controls-reset'
   }
 
-  static async login({ username, password }): Promise<void> {
+  //static
+  async login({ username, password }): Promise<void> {
     await this.page.locator(this.elements.userNameSelector).fill(username)
     await this.page.locator(this.elements.passwordSelector).fill(password)
     await this.page.locator(this.elements.loginButtonSelector).click()
