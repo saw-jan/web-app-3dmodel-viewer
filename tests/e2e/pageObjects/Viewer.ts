@@ -78,12 +78,8 @@ export class Viewer {
     await expect(appTopBarResourceName.replace(/(\r\n|\n|\r)/gm, '').trim()).toContain(filename)
   }
 
-  async checkTopbarVisibility(shouldBeVisible: boolean): Promise<void> {
-    if (shouldBeVisible) {
-      await expect(this.page.locator(this.elements.appTopBar)).toBeVisible()
-    } else {
-      await expect(this.page.locator(this.elements.appTopBar)).not.toBeVisible()
-    }
+  async checkTopbarVisibility(): Promise<void> {
+    await expect(this.page.locator(this.elements.appTopBar)).toBeVisible()
   }
 
   async checkFullscreenMode(): Promise<void> {

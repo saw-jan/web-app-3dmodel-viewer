@@ -4,8 +4,6 @@ import { config } from '../config.js'
 
 import { Viewer } from '../pageObjects/Viewer'
 
-const isVisible = true
-// const isNotVisible = false
 
 Given(
   'the user has logged in with username {string} and password {string}',
@@ -47,7 +45,7 @@ Then(
   'the file name {string} should be shown in the topbar',
   async function (filename: string): Promise<void> {
     const viewer = new Viewer()
-    await viewer.checkTopbarVisibility(isVisible)
+    await viewer.checkTopbarVisibility()
     await viewer.checkFileName(filename)
   }
 )
@@ -62,14 +60,6 @@ Then('the 3D model should be displayed in fullscreen mode', async function (): P
   await viewer.checkFullscreenMode()
 })
 
-Then('the topbar should not be visible', async function (): Promise<void> {
-  // const viewer = new Viewer()
-  // await viewer.checkTopbarVisibility(isNotVisible)
-  // this test doesn't work because the corresponding HTML element is still present in the background
-  // full screen mode just enlarges the viewport and puts it above the other elements...
-  // todo: find alternative way to test this or skip this step?
-})
-
 When('the user exits fullscreen mode', async function (): Promise<void> {
   const viewer = new Viewer()
   await viewer.toggleFullscreenMode()
@@ -78,7 +68,7 @@ When('the user exits fullscreen mode', async function (): Promise<void> {
 Then('the 3D model should be display in standard mode', async function (): Promise<void> {
   const viewer = new Viewer()
   await viewer.checkStandardDisplayMode()
-  await viewer.checkTopbarVisibility(isVisible)
+  await viewer.checkTopbarVisibility()
 })
 
 When('the user rotates the model', function () {
