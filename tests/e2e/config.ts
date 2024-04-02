@@ -4,8 +4,6 @@ const config = {
   assets: './tests/e2e/filesForUpload',
   adminUser: process.env.ADMIN_USERNAME || 'admin',
   adminPassword: process.env.ADMIN_PASSWORD || 'admin',
-  // cucumber
-  retry: process.env.RETRY || 0,
   // playwright
   slowMo: parseInt(process.env.SLOW_MO) || 0,
   timeout: parseInt(process.env.TIMEOUT) || 60,
