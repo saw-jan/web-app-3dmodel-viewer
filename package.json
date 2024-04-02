@@ -27,6 +27,7 @@
     "@ownclouders/extension-sdk": "0.0.5-alpha.2",
     "@ownclouders/prettier-config": "^0.0.1",
     "@playwright/test": "^1.41.2",
+    "@types/node": "^20.12.2",
     "@types/three": "^0.161.2",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
     "@vitejs/plugin-vue": "^4.0.0",
