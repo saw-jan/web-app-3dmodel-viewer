@@ -45,7 +45,7 @@ const sendRequest = function ({ method, path }): Promise<any> {
   }
   return axios({
     method,
-    url: join(config.baseUrlOcis, path),
+    url: path.join(config.baseUrlOcis, path),
     headers
   })
 }
