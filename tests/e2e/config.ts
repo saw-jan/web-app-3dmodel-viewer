@@ -1,4 +1,4 @@
-exports.config = {
+const config = {
   // environment
   baseUrlOcis: process.env.BASE_URL_OCIS ?? 'https://localhost:9200', // 'https://host.docker.internal:9200',
   assets: './tests/e2e/filesForUpload',
@@ -12,3 +12,5 @@ exports.config = {
   minTimeout: parseInt(process.env.MIN_TIMEOUT) || 5,
   headless: process.env.HEADLESS === 'true'
 }
+
+export default config

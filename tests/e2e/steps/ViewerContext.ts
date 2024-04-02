@@ -1,6 +1,6 @@
 import { Given, When, Then, DataTable } from '@cucumber/cucumber'
 import { state } from '../hooks'
-import { config } from '../config.js'
+import config from '../config'
 
 import { Ocis } from '../pageObjects/Ocis'
 import { Viewer } from '../pageObjects/Viewer'

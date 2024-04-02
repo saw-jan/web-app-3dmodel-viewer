@@ -4,7 +4,7 @@ import axios from 'axios'
 import join from 'join-path'
 import { xml2js } from 'xml-js'
 import { _ } from 'lodash'
-import { config } from './config.js'
+import config from './config'
 
 export const state: {
   browser: Browser

@@ -1,6 +1,6 @@
 import { Page } from '@playwright/test'
 import { state } from '../hooks'
-import { config } from '../config.js'
+import config from '../config'
 import util from 'util'
 
 export class Ocis {
