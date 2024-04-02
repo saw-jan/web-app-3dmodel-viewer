@@ -1,7 +1,6 @@
 import { Before, BeforeAll, After, AfterAll, setDefaultTimeout } from '@cucumber/cucumber'
 import { Browser, chromium, Page } from '@playwright/test'
 import axios from 'axios'
-import join from 'path'
 import { xml2js } from 'xml-js'
 import { _ } from 'lodash'
 import config from './config'
