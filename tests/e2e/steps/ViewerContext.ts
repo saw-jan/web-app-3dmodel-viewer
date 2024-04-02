@@ -4,7 +4,6 @@ import { config } from '../config.js'
 
 import { Viewer } from '../pageObjects/Viewer'
 
-
 Given(
   'the user has logged in with username {string} and password {string}',
   async function (user: string, password: string): Promise<void> {
