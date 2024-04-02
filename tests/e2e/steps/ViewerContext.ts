@@ -2,24 +2,25 @@ import { Given, When, Then, DataTable } from '@cucumber/cucumber'
 import { state } from '../hooks'
 import { config } from '../config.js'
 
+import { Ocis } from '../pageObjects/Ocis'
 import { Viewer } from '../pageObjects/Viewer'
 
 Given(
   'the user has logged in with username {string} and password {string}',
   async function (user: string, password: string): Promise<void> {
     const page = state.page
-    const viewer = new Viewer()
+    const ocis = new Ocis()
     await page.goto(config.baseUrlOcis)
-    await viewer.login({ username: user, password: password })
+    await ocis.login({ username: user, password: password })
   }
 )
 
 Given(
   'the user has uploaded the following 3D models:',
   async function (filesForUpload: DataTable): Promise<void> {
-    const viewer = new Viewer()
+    const ocis = new Ocis()
     for (const file of filesForUpload.hashes()) {
-      await viewer.uploadFile(file.filename)
+      await ocis.uploadFile(file.filename)
     }
   }
 )
