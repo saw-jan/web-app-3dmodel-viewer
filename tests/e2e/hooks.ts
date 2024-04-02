@@ -39,7 +39,7 @@ After(async function (): Promise<void> {
   await state.page.close()
 })
 
-const sendRequest = function ({ method, path }): Promise<void> {
+const sendRequest = function ({ method, path }): Promise<any> {
   const headers = {
     Authorization: `Basic ${Buffer.from(`${config.adminUser}:${config.adminPassword}`).toString('base64')}`
   }
