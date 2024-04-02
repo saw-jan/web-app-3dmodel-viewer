@@ -12,7 +12,6 @@ export class Viewer {
     webContentSelector: '#web-content',
     userMenuButtonSelector: '#_userMenuButton',
     logoutSelector: '#oc-topbar-account-logout',
-    loginFormSelector: '.oc-login-form',
     resourceUploadButton: '#upload-menu-btn',
     fileUploadInput: '#files-file-upload-input',
     resourceNameSelector: '#files-space-table [data-test-resource-name="%s"]',
