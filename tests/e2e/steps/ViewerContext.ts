@@ -9,18 +9,16 @@ Given(
   'the user has logged in with username {string} and password {string}',
   async function (user: string, password: string): Promise<void> {
     const page = state.page
-    const ocis = new Ocis()
     await page.goto(config.baseUrlOcis)
-    await ocis.login({ username: user, password: password })
+    await Ocis.login({ username: user, password: password })
   }
 )
 
 Given(
   'the user has uploaded the following 3D models:',
   async function (filesForUpload: DataTable): Promise<void> {
-    const ocis = new Ocis()
     for (const file of filesForUpload.hashes()) {
-      await ocis.uploadFile(file.filename)
+      await Ocis.uploadFile(file.filename)
     }
   }
 )
