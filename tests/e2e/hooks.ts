@@ -1,9 +1,7 @@
 import { Before, BeforeAll, After, AfterAll, setDefaultTimeout } from '@cucumber/cucumber'
 import { Browser, chromium, Page } from '@playwright/test'
-import axios from 'axios'
-import { xml2js } from 'xml-js'
-import { _ } from 'lodash'
 import config from './config'
+import { deleteAllFiles, emptyTrashbin } from './utils/helpers'
 
 export const state: {
   browser: Browser
@@ -37,29 +35,3 @@ After(async function (): Promise<void> {
   await emptyTrashbin()
   await state.page.close()
 })
-
-const sendRequest = function ({ method, path }): Promise<any> {
-  const headers = {
-    Authorization: `Basic ${Buffer.from(`${config.adminUser}:${config.adminPassword}`).toString('base64')}`
-  }
-  return axios({
-    method,
-    url: path.join(config.baseUrlOcis, path),
-    headers
-  })
-}
-
-const deleteAllFiles = async function (): Promise<void> {
-  // check path, it doesn't seem like this is deleting all files
-  const response = await sendRequest({ method: 'PROPFIND', path: 'remote.php/dav/files/admin' })
-  const xmlResponse = response.data
-  const result = xml2js(xmlResponse, { compact: true })
-  const resp = _.get(result, 'd:multistatus.d:response')
-  const href = _.get(resp[1], 'd:href._text')
-
-  await sendRequest({ method: 'DELETE', path: href })
-}
-
-const emptyTrashbin = async function (): Promise<void> {
-  await sendRequest({ method: 'DELETE', path: 'remote.php/dav/trash-bin/admin' })
-}

@@ -6,7 +6,6 @@ import util from 'util'
 export class Ocis {
   static page: Page = state.page
   static elements: Readonly<Record<string, string>> = {
-
     userNameSelector: '#oc-login-username',
     passwordSelector: '#oc-login-password',
     loginButtonSelector: 'button[type="submit"]',
