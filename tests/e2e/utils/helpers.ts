@@ -2,8 +2,7 @@ import axios from 'axios'
 import { xml2js } from 'xml-js'
 import { _ } from 'lodash'
 import config from '../config'
-
-const _path = require('path')
+import _path from 'path'
 
 const sendRequest = ({ method, path }): Promise<any> => {
   const headers = {
