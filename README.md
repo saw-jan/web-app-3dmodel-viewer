@@ -49,4 +49,13 @@ docker run --rm -p3000:80 sawjan/web-app-3dmodel-viewer
 
    Now, you can access the web at https://localhost:9200
 
-For 3D models: [sketchfab](https://sketchfab.com/) (Download the models in `.glb` format)
+## 3D models
+The app currently only supports 3D models in `.glb` format. You can find models on the following platforms:
+- [sketchfab](https://sketchfab.com/)
+- [3Dexport](https://3dexport.com/free-3d-models)
+- [archive3D](https://archive3d.net/)
+- [clara.io](https://clara.io/library)
+- [downloadfree3D](https://downloadfree3d.com/file-format/glb/)
+- [free3D](https://free3d.com/)
+- [sketchup](https://3dwarehouse.sketchup.com/)
+- [turbosquid](https://www.turbosquid.com/Search/3D-Models/free)
