@@ -11,16 +11,6 @@ This is an extension for [ownCloud web](https://github.com/owncloud/web) for vie
 - Fullscreen view
 - Navigate between model files
 
-## Docker Image
-
-This extension is available as docker image: [sawjan/web-app-3dmodel-viewer](https://hub.docker.com/r/sawjan/web-app-3dmodel-viewer/tags)
-
-Run the extension container with:
-
-```bash
-docker run --rm -p3000:80 sawjan/web-app-3dmodel-viewer
-```
-You can access the app at https://host.docker.internal:9200
 
 ## Build and Run
 
@@ -51,6 +41,16 @@ For building and running the app from the code base, follow these steps:
    ```
 
 Now, you can access the app at https://localhost:9200
+
+## Docker Image
+
+This extension is available as docker image: [sawjan/web-app-3dmodel-viewer](https://hub.docker.com/r/sawjan/web-app-3dmodel-viewer/tags)
+
+Run the extension container with:
+
+```bash
+docker run --rm -p3000:80 sawjan/web-app-3dmodel-viewer
+```
 
 ## 3D models
 
