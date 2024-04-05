@@ -11,7 +11,7 @@ const getWebDavTrashbinPath = (user) => {
   return _path.join('remote.php/dav/trash-bin', user)
 }
 
-const makeApiRequest = ({ method, path, data=null }): Promise<any> => {
+const makeApiRequest = ({ method, path, data = null }): Promise<any> => {
   try {
     console.log(method + ' request path: ' + _path.join(config.baseUrlOcis, path))
     const headers = {

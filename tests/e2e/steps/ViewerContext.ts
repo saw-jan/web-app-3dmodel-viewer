@@ -6,11 +6,9 @@ import { Ocis } from '../pageObjects/Ocis'
 import { Viewer } from '../pageObjects/Viewer'
 import { uploadFile } from '../utils/helpers'
 
-
 Given(
   'the following 3D models have been uploaded:',
   async function (filesForUpload: DataTable): Promise<void> {
-    const ocis = new Ocis()
     for (const file of filesForUpload.hashes()) {
       // TODO remember all files that are uploaded
       await uploadFile(file.filename)
