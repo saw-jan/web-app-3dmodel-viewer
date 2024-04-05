@@ -15,7 +15,6 @@ const getWebDavTrashbinPath = (user) => {
 
 const makeApiRequest = ({ method, path, data = null }): Promise<any> => {
   try {
-    console.log(method + ' request path: ' + _path.join(config.baseUrlOcis, path))
     const headers = {
       Authorization: `Basic ${Buffer.from(`${config.adminUser}:${config.adminPassword}`).toString('base64')}`
     }
@@ -42,7 +41,7 @@ export const uploadFile = async (filename: string): Promise<void> => {
   uploadedFiles.push(filename)
 }
 
-export const deleteFile = async (filename): Promise<void> => {
+const deleteFile = async (filename): Promise<void> => {
   return await makeApiRequest({
     method: 'DELETE',
     path: getWebDavFilePath(config.adminUser, filename)

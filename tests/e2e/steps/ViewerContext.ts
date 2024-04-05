@@ -28,8 +28,8 @@ Given(
 When(
   'the user previews the file {string} in the 3D model viewer',
   async function (filename: string): Promise<void> {
-    const viewer = new Viewer()
-    await viewer.previewFile(filename)
+    const ocis = new Ocis()
+    await ocis.previewFile(filename)
   }
 )
 
