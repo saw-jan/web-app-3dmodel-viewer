@@ -10,7 +10,6 @@ Given(
   'the following 3D models have been uploaded:',
   async function (filesForUpload: DataTable): Promise<void> {
     for (const file of filesForUpload.hashes()) {
-      // TODO remember all files that are uploaded
       await uploadFile(file.filename)
     }
   }

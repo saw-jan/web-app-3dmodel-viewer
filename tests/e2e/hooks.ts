@@ -1,7 +1,7 @@
 import { Before, BeforeAll, After, AfterAll, setDefaultTimeout } from '@cucumber/cucumber'
 import { Browser, chromium, Page } from '@playwright/test'
 import config from './config'
-import { deleteFile, emptyTrashbin } from './utils/helpers'
+import { deleteAllFiles, emptyTrashbin } from './utils/helpers'
 
 export const state: {
   browser: Browser
@@ -31,9 +31,7 @@ AfterAll(async function (): Promise<void> {
 })
 
 After(async function (): Promise<void> {
-  // TODO get all uploaded files and only delete them
-  await deleteFile('model1.glb')
-  await deleteFile('model2.glb')
+  await deleteAllFiles()
   await emptyTrashbin()
   await state.page.close()
 })

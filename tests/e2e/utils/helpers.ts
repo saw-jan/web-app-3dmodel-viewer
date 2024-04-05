@@ -3,6 +3,8 @@ import config from '../config'
 import _path from 'path'
 import * as fs from 'fs'
 
+const uploadedFiles: string[] = []
+
 const getWebDavFilePath = (user, filename) => {
   return _path.join('remote.php/dav/files', user, filename)
 }
@@ -37,6 +39,7 @@ export const uploadFile = async (filename: string): Promise<void> => {
     path: fileUploadUrl,
     data: fileContent
   })
+  uploadedFiles.push(filename)
 }
 
 export const deleteFile = async (filename): Promise<void> => {
@@ -46,13 +49,11 @@ export const deleteFile = async (filename): Promise<void> => {
   })
 }
 
-/*
 export const deleteAllFiles = async (): Promise<void> => {
-  for (const r in resp) {
-    await deleteFile(r)
+  while (uploadedFiles.length > 0) {
+    await deleteFile(uploadedFiles.pop())
   }
 }
-*/
 
 export const emptyTrashbin = async (): Promise<void> => {
   return await makeApiRequest({
