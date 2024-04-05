@@ -1,35 +1,62 @@
 import axios from 'axios'
-import { xml2js } from 'xml-js'
-import { _ } from 'lodash'
 import config from '../config'
 import _path from 'path'
+import * as fs from 'fs'
 
-const sendRequest = ({ method, path }): Promise<any> => {
-  const headers = {
-    Authorization: `Basic ${Buffer.from(`${config.adminUser}:${config.adminPassword}`).toString('base64')}`
+const getWebDavFilePath = (user, filename) => {
+  return _path.join('remote.php/dav/files', user, filename)
+}
+
+const getWebDavTrashbinPath = (user) => {
+  return _path.join('remote.php/dav/trash-bin', user)
+}
+
+const makeApiRequest = ({ method, path, data=null }): Promise<any> => {
+  try {
+    console.log(method + ' request path: ' + _path.join(config.baseUrlOcis, path))
+    const headers = {
+      Authorization: `Basic ${Buffer.from(`${config.adminUser}:${config.adminPassword}`).toString('base64')}`
+    }
+    return axios({
+      method,
+      url: _path.join(config.baseUrlOcis, path),
+      headers,
+      data
+    })
+  } catch (error) {
+    throw new Error(error.message)
   }
-  return axios({
-    method,
-    url: _path.join(config.baseUrlOcis, path),
-    headers
+}
+
+export const uploadFile = async (filename: string): Promise<void> => {
+  const fileUploadUrl = getWebDavFilePath(config.adminUser, filename)
+  const filePath = _path.join(config.assets, filename)
+  const fileContent = fs.readFileSync(filePath)
+  await makeApiRequest({
+    method: 'PUT',
+    path: fileUploadUrl,
+    data: fileContent
   })
 }
 
-const deleteFile = async (resource): Promise<void> => {
-  const href = _.get(resource, 'd:href._text')
-  return await sendRequest({ method: 'DELETE', path: href })
+export const deleteFile = async (filename): Promise<void> => {
+  return await makeApiRequest({
+    method: 'DELETE',
+    path: getWebDavFilePath(config.adminUser, filename)
+  })
 }
 
+/*
 export const deleteAllFiles = async (): Promise<void> => {
-  const response = await sendRequest({ method: 'PROPFIND', path: 'remote.php/dav/files/admin' })
-  const xmlResponse = response.data
-  const result = xml2js(xmlResponse, { compact: true })
-  const resp = _.get(result, 'd:multistatus.d:response')
   for (const r in resp) {
     await deleteFile(r)
   }
 }
+*/
 
 export const emptyTrashbin = async (): Promise<void> => {
-  return await sendRequest({ method: 'DELETE', path: 'remote.php/dav/trash-bin/admin' })
+  return await makeApiRequest({
+    method: 'DELETE',
+    path: getWebDavTrashbinPath(config.adminUser)
+  })
 }

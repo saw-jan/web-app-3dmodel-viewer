@@ -41,8 +41,7 @@
     "three": "^0.160.0",
     "ts-node": "^10.9.2",
     "vite": "^5.0.12",
-    "vue": "^3.4.15",
-    "xml-js": "^1.6.11"
+    "vue": "^3.4.15"
   },
   "peerDependencies": {
     "@ownclouders/web-client": "0.0.1",
