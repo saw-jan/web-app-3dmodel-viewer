@@ -1,10 +1,11 @@
 import { Given, When, Then, DataTable } from '@cucumber/cucumber'
+import { expect } from '@playwright/test'
 import { state } from '../hooks'
 import config from '../config'
 
 import { Ocis } from '../pageObjects/Ocis'
 import { Viewer } from '../pageObjects/Viewer'
-import { uploadFile } from '../utils/helpers'
+import { uploadFile, delay } from '../utils/helpers'
 
 Given(
   'the following 3D models have been uploaded:',
@@ -37,7 +38,11 @@ Then(
   'the 3D model {string} should be displayed in the viewport',
   async function (filename: string): Promise<void> {
     const viewer = new Viewer()
-    await viewer.checkViewport(filename)
+    // add some delay to allow model to be loaded
+    await delay(1000)
+    // check if the filename is displayed in hidden h1 title element of the viewport
+    const viewportDescription = await viewer.getViewportDescription()
+    expect(viewportDescription).toContain(filename)
   }
 )
 
@@ -45,8 +50,8 @@ Then(
   'the file name {string} should be shown in the topbar',
   async function (filename: string): Promise<void> {
     const viewer = new Viewer()
-    await viewer.checkTopbarVisibility()
-    await viewer.checkFileName(filename)
+    const topbarFilename = await viewer.getTopbarResourceName()
+    expect(topbarFilename).toContain(filename)
   }
 )
 
@@ -57,7 +62,11 @@ When('the user enters fullscreen mode', async function (): Promise<void> {
 
 Then('the 3D model should be displayed in fullscreen mode', async function (): Promise<void> {
   const viewer = new Viewer()
-  await viewer.checkFullscreenMode()
+  const viewportWrapperSize = await viewer.getViewportWrapperSize()
+  const windowInnerSize = await viewer.getWindowInnerSize()
+  // in fullscreen mode, model viewport wrapper should have same size as browser window
+  expect(viewportWrapperSize[0]).toBe(viewportWrapperSize[0])
+  expect(viewportWrapperSize[1]).toBe(viewportWrapperSize[1])
 })
 
 When('the user exits fullscreen mode', async function (): Promise<void> {

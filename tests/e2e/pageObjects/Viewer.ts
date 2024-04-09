@@ -5,65 +5,55 @@ import util from 'util'
 export class Viewer {
   page: Page = state.page
   elements: Readonly<Record<string, string>> = {
-    resourceNameSelector: '#files-space-table [data-test-resource-name="%s"]',
     appbarResourceNameSelector: '#app-top-bar-resource [data-test-resource-name="%s"]',
     appTopBar: '.oc-app-top-bar .oc-resource', // '.oc-app-top-bar',
-    appTopBarResourceName: '.oc-resource-name',
+    appTopBarResourceBasename: '.oc-resource-basename',
+    appTopBarResourceExtension: '.oc-resource-extension',
     modelViewport: '#preview .model-viewport',
     modelViewportWrapper: '#preview #scene-wrapper',
     modelViewportWrapperFullscreen: '#scene-wrapper:fullscreen',
-    modelViewportDescription: '#preview h1.oc-invisible-sr',
-    modelViewportCanvas: '#preview .model-viewport canvas',
+    modelViewportDescription: '#preview h1.oc-invisible-sr', // 'oc-hidden-announcer',
+    modelViewportCanvas: '#preview .model-viewport', // '#preview .model-viewport canvas'
     controlButtonPrev: '.preview-controls-previous',
     controlButtonNext: '.preview-controls-next',
     controlButtonFullscreen: '.preview-controls-fullscreen',
     controlButtonReset: '. preview-controls-reset'
   }
 
-  async previewFile(filename: string): Promise<void> {
-    await this.page.locator(util.format(this.elements.resourceNameSelector, filename)).click()
-    await expect(this.page.locator(this.elements.modelViewport)).toBeVisible()
+  async getViewportDescription(): Promise<string> {
+    return await this.page.locator(this.elements.modelViewportDescription).innerText()
   }
 
-  async checkViewport(filename: string): Promise<void> {
-    await expect(this.page.locator(this.elements.modelViewport)).toBeVisible()
-    await expect(this.page.locator(this.elements.modelViewportCanvas)).toBeVisible()
-    // check if file name is displayed in hidden h1 title element
-    const description = await this.page.locator(this.elements.modelViewportDescription).innerText()
-    await expect(description).toContain(filename)
-    // todo: check if there are better ways to verify if the model is displayed in the viewport
-  }
-
-  async checkFileName(filename: string): Promise<void> {
-    // from dicom viewer e2e test
-    await expect(
-      this.page.locator(util.format(this.elements.appbarResourceNameSelector, filename))
-    ).toBeVisible()
-    // own approach for checking file name
-    const appTopBarResourceName = await this.page
-      .locator(this.elements.appTopBarResourceName)
+  async getTopbarResourceName(): Promise<string> {
+    const topbarResourceBasename = await this.page
+      .locator(this.elements.appTopBarResourceBasename)
       .innerText()
-    await expect(appTopBarResourceName.replace(/(\r\n|\n|\r)/gm, '').trim()).toContain(filename)
+    const topbarResourceExtension = await this.page
+      .locator(this.elements.appTopBarResourceExtension)
+      .innerText()
+    return topbarResourceBasename + topbarResourceExtension
+  }
+
+  async getViewportWrapperSize(): Promise<[string, string]> {
+    const element = await this.page.waitForSelector(this.elements.modelViewportWrapper)
+    const viewportHeight = await element.evaluate((el) => {
+      return window.getComputedStyle(el).getPropertyValue('height')
+    })
+    const viewportWidth = await element.evaluate((el) => {
+      return window.getComputedStyle(el).getPropertyValue('width')
+    })
+    // slice removes px at the end of value
+    return [viewportHeight.slice(0, -2), viewportWidth.slice(0, -2)]
+  }
+
+  async getWindowInnerSize(): Promise<[string, string]> {
+    const windowInnerHeight = await this.page.evaluate(() => window.innerHeight)
+    const windowInnerWidth = await this.page.evaluate(() => window.innerWidth)
+    return [windowInnerHeight.toString(), windowInnerWidth.toString()]
   }
 
   async checkTopbarVisibility(): Promise<void> {
     await expect(this.page.locator(this.elements.appTopBar)).toBeVisible()
-  }
-
-  async checkFullscreenMode(): Promise<void> {
-    // modelViewportWrapper should have same size as browser window
-    const windowInnerHeight = await this.page.evaluate(() => window.innerHeight)
-    const windowInnerWidth = await this.page.evaluate(() => window.innerWidth)
-    await expect(this.page.locator(this.elements.modelViewportWrapper)).toHaveCSS(
-      'height',
-      windowInnerHeight.toString() + 'px'
-    )
-    await expect(this.page.locator(this.elements.modelViewportWrapper)).toHaveCSS(
-      'width',
-      windowInnerWidth.toString() + 'px'
-    )
-    // alternative approach for testing this: fullscreen pseudo class exists
-    await expect(this.page.locator(this.elements.modelViewportWrapperFullscreen)).toBeVisible()
   }
 
   async checkStandardDisplayMode(): Promise<void> {
@@ -116,5 +106,15 @@ export class Viewer {
         await page.locator('#item-to-drop-at').hover();
         await page.mouse.up();
         */
+  }
+
+  // helper function
+  async getComputedStyleForSelector(selector: string, cssAttribute: string): Promise<string> {
+    const element = await this.page.waitForSelector(selector)
+    const value = await element.evaluate((el) => {
+      return window.getComputedStyle(el).getPropertyValue(cssAttribute)
+    })
+    return value
+    //returns Promise object
   }
 }

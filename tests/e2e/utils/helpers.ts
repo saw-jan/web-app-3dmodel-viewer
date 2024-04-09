@@ -60,3 +60,8 @@ export const emptyTrashbin = async (): Promise<void> => {
     path: getWebDavTrashbinPath(config.adminUser)
   })
 }
+
+export function delay(ms: number) {
+    return new Promise( resolve => setTimeout(resolve, ms) )
+}
+
