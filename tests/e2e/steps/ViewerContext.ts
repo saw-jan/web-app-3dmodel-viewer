@@ -1,6 +1,5 @@
 import { Given, When, Then, DataTable } from '@cucumber/cucumber'
 import { expect } from '@playwright/test'
-import { state } from '../hooks'
 import config from '../config'
 
 import { Ocis } from '../pageObjects/Ocis'
@@ -19,8 +18,7 @@ Given(
 Given(
   'the user has logged in with username {string} and password {string}',
   async function (user: string, password: string): Promise<void> {
-    const page = state.page
-    await page.goto(config.baseUrlOcis)
+    await global.page.goto(config.baseUrlOcis)
     const ocis = new Ocis()
     await ocis.login({ username: user, password: password })
   }

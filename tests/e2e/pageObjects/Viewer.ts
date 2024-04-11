@@ -1,8 +1,6 @@
-import { Page, expect } from '@playwright/test'
-import { state } from '../hooks'
+import { expect } from '@playwright/test'
 
 export class Viewer {
-  page: Page = state.page
   elements: Readonly<Record<string, string>> = {
     appbarResourceNameSelector: '#app-top-bar-resource [data-test-resource-name="%s"]',
     appTopBar: '.oc-app-top-bar .oc-resource', // '.oc-app-top-bar',
@@ -20,21 +18,21 @@ export class Viewer {
   }
 
   async getViewportDescription(): Promise<string> {
-    return await this.page.locator(this.elements.modelViewportDescription).innerText()
+    return await global.page.locator(this.elements.modelViewportDescription).innerText()
   }
 
   async getTopbarResourceName(): Promise<string> {
-    const topbarResourceBasename = await this.page
+    const topbarResourceBasename = await global.page
       .locator(this.elements.appTopBarResourceBasename)
       .innerText()
-    const topbarResourceExtension = await this.page
+    const topbarResourceExtension = await global.page
       .locator(this.elements.appTopBarResourceExtension)
       .innerText()
     return topbarResourceBasename + topbarResourceExtension
   }
 
   async getViewportWrapperSize(): Promise<[string, string]> {
-    const element = await this.page.waitForSelector(this.elements.modelViewportWrapper)
+    const element = await global.page.waitForSelector(this.elements.modelViewportWrapper)
     const viewportHeight = await element.evaluate((el) => {
       return window.getComputedStyle(el).getPropertyValue('height')
     })
@@ -46,41 +44,41 @@ export class Viewer {
   }
 
   async getWindowInnerSize(): Promise<[string, string]> {
-    const windowInnerHeight = await this.page.evaluate(() => window.innerHeight)
-    const windowInnerWidth = await this.page.evaluate(() => window.innerWidth)
+    const windowInnerHeight = await global.page.evaluate(() => window.innerHeight)
+    const windowInnerWidth = await global.page.evaluate(() => window.innerWidth)
     return [windowInnerHeight.toString(), windowInnerWidth.toString()]
   }
 
   async checkTopbarVisibility(): Promise<void> {
-    await expect(this.page.locator(this.elements.appTopBar)).toBeVisible()
+    await expect(global.page.locator(this.elements.appTopBar)).toBeVisible()
   }
 
   async checkStandardDisplayMode(): Promise<void> {
     // fullscreen pseudo class is hidden (doesn't exist)
-    await expect(this.page.locator(this.elements.modelViewportWrapperFullscreen)).toBeHidden()
+    await expect(global.page.locator(this.elements.modelViewportWrapperFullscreen)).toBeHidden()
   }
 
   async toggleFullscreenMode(): Promise<void> {
-    await this.page.locator(this.elements.controlButtonFullscreen).click()
+    await global.page.locator(this.elements.controlButtonFullscreen).click()
   }
 
   async resetViewport(): Promise<void> {
-    await this.page.locator(this.elements.controlButtonReset).click()
+    await global.page.locator(this.elements.controlButtonReset).click()
   }
 
   async displayNextModel(): Promise<void> {
-    await this.page.locator(this.elements.controlButtonNext).click()
+    await global.page.locator(this.elements.controlButtonNext).click()
   }
 
   async displayPreviousModel(): Promise<void> {
-    await this.page.locator(this.elements.controlButtonPrev).click()
+    await global.page.locator(this.elements.controlButtonPrev).click()
   }
 
   async modifyModel(): Promise<void> {
     // select viewport
     // locator.focus()	Focus the element
     // move or wheel mouse interaction
-    // await this.page.locator(this.elements.??).mouse.move()
+    // await global.page.locator(this.elements.??).mouse.move()
     // mousewheel?
     // https://www.lambdatest.com/automation-testing-advisor/javascript/playwright-internal-mouseWheel
     /*
@@ -89,14 +87,14 @@ export class Viewer {
         - delta_x (float#): Pixels to scroll horizontally
         - delta_y (float#): Pixels to scroll vertically
 
-        await this.page.locator(this.elements.??).mouse.wheel()
+        await global.page.locator(this.elements.??).mouse.wheel()
         */
     /*
         https://webscraping.ai/faq/playwright/how-to-handle-mouse-actions-using-playwright
-        await this.page.locator().mouse.move(startX, startY)
-        await this.page.mouse.down()
-        await this.page.mouse.move(endX, endY)
-        await this.page.mouse.up()
+        await global.page.locator().mouse.move(startX, startY)
+        await global.page.mouse.down()
+        await global.page.mouse.move(endX, endY)
+        await global.page.mouse.up()
         */
     /*
         https://playwright.dev/docs/input#mouse-click
@@ -109,7 +107,7 @@ export class Viewer {
 
   // helper function
   async getComputedStyleForSelector(selector: string, cssAttribute: string): Promise<string> {
-    const element = await this.page.waitForSelector(selector)
+    const element = await global.page.waitForSelector(selector)
     const value = await element.evaluate((el) => {
       return window.getComputedStyle(el).getPropertyValue(cssAttribute)
     })
