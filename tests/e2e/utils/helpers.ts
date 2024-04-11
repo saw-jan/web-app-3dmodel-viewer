@@ -38,6 +38,9 @@ export const uploadFile = async (filename: string): Promise<void> => {
     path: fileUploadUrl,
     data: fileContent
   })
+  if (response.status !== 201) {
+    throw new Error(`Failed to upload file ${filename}`)
+  }
   uploadedFiles.push(filename)
 }
 
