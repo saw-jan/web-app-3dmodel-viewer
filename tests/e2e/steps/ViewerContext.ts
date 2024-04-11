@@ -65,8 +65,8 @@ Then('the 3D model should be displayed in fullscreen mode', async function (): P
   const viewportWrapperSize = await viewer.getViewportWrapperSize()
   const windowInnerSize = await viewer.getWindowInnerSize()
   // in fullscreen mode, model viewport wrapper should have same size as browser window
-  expect(viewportWrapperSize[0]).toBe(viewportWrapperSize[0])
-  expect(viewportWrapperSize[1]).toBe(viewportWrapperSize[1])
+  expect(viewportWrapperSize[0]).toBe(windowInnerSize[0])
+  expect(viewportWrapperSize[1]).toBe(windowInnerSize[1])
 })
 
 When('the user exits fullscreen mode', async function (): Promise<void> {
