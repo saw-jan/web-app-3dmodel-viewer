@@ -1,5 +1,5 @@
 import { Before, BeforeAll, After, AfterAll, setDefaultTimeout } from '@cucumber/cucumber'
-import { Browser, chromium, Page } from '@playwright/test'
+import { chromium } from '@playwright/test'
 import config from './config'
 import { deleteAllFiles, emptyTrashbin } from './utils/helpers'
 
