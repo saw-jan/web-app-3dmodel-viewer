@@ -1,6 +1,5 @@
 import { Page, expect } from '@playwright/test'
 import { state } from '../hooks'
-import util from 'util'
 
 export class Viewer {
   page: Page = state.page

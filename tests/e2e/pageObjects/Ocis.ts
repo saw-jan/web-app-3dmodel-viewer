@@ -13,7 +13,7 @@ export class Ocis {
     webContentSelector: '#web-content',
     resourceNameSelector: '#files-space-table [data-test-resource-name="%s"]',
     userMenuButtonSelector: '#_userMenuButton',
-    logoutSelector: '#oc-topbar-account-logout',
+    logoutSelector: '#oc-topbar-account-logout'
   }
 
   async login({ username, password }): Promise<void> {
