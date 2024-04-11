@@ -33,7 +33,7 @@ export const uploadFile = async (filename: string): Promise<void> => {
   const fileUploadUrl = getWebDavFilePath(config.adminUser, filename)
   const filePath = _path.join(config.assets, filename)
   const fileContent = fs.readFileSync(filePath)
-  await makeApiRequest({
+  const response = await makeApiRequest({
     method: 'PUT',
     path: fileUploadUrl,
     data: fileContent
@@ -65,6 +65,5 @@ export const emptyTrashbin = async (): Promise<void> => {
 }
 
 export function delay(ms: number) {
-    return new Promise( resolve => setTimeout(resolve, ms) )
+  return new Promise((resolve) => setTimeout(resolve, ms))
 }
-
