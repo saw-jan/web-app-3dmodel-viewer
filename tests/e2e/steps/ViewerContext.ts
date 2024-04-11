@@ -1,7 +1,6 @@
 import { Given, When, Then, DataTable } from '@cucumber/cucumber'
 import { expect } from '@playwright/test'
 import config from '../config'
-import util from 'util'
 
 import { Ocis } from '../pageObjects/Ocis'
 import { Viewer } from '../pageObjects/Viewer'
@@ -84,14 +83,12 @@ Then('the 3D model should be display in standard mode', async function (): Promi
   await expect(global.page.locator(viewer.elements.appTopBar)).toBeVisible()
 })
 
-When('the user rotates the model', function () {
-  // modify camera.rotation with random value or initiate some mouse event?
-  return 'pending'
+When('the user rotates the model', async function (): Promise<void> {
+  await viewer.modifyModelRotation()
 })
 
-When('the user zooms into the model', function () {
-  // modify camera.position.z with random value
-  return 'pending'
+When('the user zooms into the model', async function (): Promise<void> {
+  await viewer.modifyModelZoom()
 })
 
 Then('the size and position of the 3D model will be changed accordingly', function () {

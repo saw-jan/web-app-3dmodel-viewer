@@ -1,5 +1,3 @@
-import { expect } from '@playwright/test'
-
 export class Viewer {
   elements: Readonly<Record<string, string>> = {
     appbarResourceNameSelector: '#app-top-bar-resource [data-test-resource-name="%s"]',
@@ -63,6 +61,16 @@ export class Viewer {
 
   async displayPreviousModel(): Promise<void> {
     await global.page.locator(this.elements.controlButtonPrev).click()
+  }
+
+  async modifyModelRotation(): Promise<void> {
+    // to be implemented
+    // modify camera.rotation with random value or initiate some mouse event?
+  }
+
+  async modifyModelZoom(): Promise<void> {
+    // to be implemented
+    // modify camera.position.z with random value
   }
 
   async modifyModel(): Promise<void> {
