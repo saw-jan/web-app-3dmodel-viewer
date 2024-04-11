@@ -1,6 +1,7 @@
 import { Given, When, Then, DataTable } from '@cucumber/cucumber'
 import { expect } from '@playwright/test'
 import config from '../config'
+import util from 'util'
 
 import { Ocis } from '../pageObjects/Ocis'
 import { Viewer } from '../pageObjects/Viewer'
@@ -36,6 +37,9 @@ When(
 Then(
   'the 3D model {string} should be displayed in the viewport',
   async function (filename: string): Promise<void> {
+    // check if viewport and canvas are visible
+    await expect(global.page.locator(viewer.elements.modelViewport)).toBeVisible()
+    await expect(global.page.locator(viewer.elements.modelViewportCanvas)).toBeVisible()
     // add some delay to allow model to be loaded
     await delay(1000)
     // check if the filename is displayed in hidden h1 title element of the viewport
@@ -47,6 +51,9 @@ Then(
 Then(
   'the file name {string} should be shown in the topbar',
   async function (filename: string): Promise<void> {
+    // check if topbar is visible
+    await expect(global.page.locator(viewer.elements.appTopBar)).toBeVisible()
+    // check if correct file name is displayed
     const topbarFilename = await viewer.getTopbarResourceName()
     expect(topbarFilename).toContain(filename)
   }
@@ -62,6 +69,8 @@ Then('the 3D model should be displayed in fullscreen mode', async function (): P
   // in fullscreen mode, model viewport wrapper should have same size as browser window
   expect(viewportWrapperSize[0]).toBe(windowInnerSize[0])
   expect(viewportWrapperSize[1]).toBe(windowInnerSize[1])
+  // additionally test if fullscreen pseudo class exists
+  await expect(global.page.locator(viewer.elements.modelViewportWrapperFullscreen)).toBeVisible()
 })
 
 When('the user exits fullscreen mode', async function (): Promise<void> {
@@ -69,8 +78,10 @@ When('the user exits fullscreen mode', async function (): Promise<void> {
 })
 
 Then('the 3D model should be display in standard mode', async function (): Promise<void> {
-  await viewer.checkStandardDisplayMode()
-  await viewer.checkTopbarVisibility()
+  // check if fullscreen pseudo class is hidden (doesn't exist)
+  await expect(global.page.locator(viewer.elements.modelViewportWrapperFullscreen)).toBeHidden()
+  // check if top bar is visible
+  await expect(global.page.locator(viewer.elements.appTopBar)).toBeVisible()
 })
 
 When('the user rotates the model', function () {

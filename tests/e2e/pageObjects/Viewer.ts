@@ -3,14 +3,14 @@ import { expect } from '@playwright/test'
 export class Viewer {
   elements: Readonly<Record<string, string>> = {
     appbarResourceNameSelector: '#app-top-bar-resource [data-test-resource-name="%s"]',
-    appTopBar: '.oc-app-top-bar .oc-resource', // '.oc-app-top-bar',
+    appTopBar: '.oc-app-top-bar .oc-resource',
     appTopBarResourceBasename: '.oc-resource-basename',
     appTopBarResourceExtension: '.oc-resource-extension',
     modelViewport: '#preview .model-viewport',
     modelViewportWrapper: '#preview #scene-wrapper',
     modelViewportWrapperFullscreen: '#scene-wrapper:fullscreen',
     modelViewportDescription: '#preview h1.oc-invisible-sr', // 'oc-hidden-announcer',
-    modelViewportCanvas: '#preview .model-viewport', // '#preview .model-viewport canvas'
+    modelViewportCanvas: '#preview .model-viewport canvas',
     controlButtonPrev: '.preview-controls-previous',
     controlButtonNext: '.preview-controls-next',
     controlButtonFullscreen: '.preview-controls-fullscreen',
@@ -39,7 +39,7 @@ export class Viewer {
     const viewportWidth = await element.evaluate((el) => {
       return window.getComputedStyle(el).getPropertyValue('width')
     })
-    // slice removes px at the end of value
+    // slice removes 'px' at the end of value
     return [viewportHeight.slice(0, -2), viewportWidth.slice(0, -2)]
   }
 
@@ -47,15 +47,6 @@ export class Viewer {
     const windowInnerHeight = await global.page.evaluate(() => window.innerHeight)
     const windowInnerWidth = await global.page.evaluate(() => window.innerWidth)
     return [windowInnerHeight.toString(), windowInnerWidth.toString()]
-  }
-
-  async checkTopbarVisibility(): Promise<void> {
-    await expect(global.page.locator(this.elements.appTopBar)).toBeVisible()
-  }
-
-  async checkStandardDisplayMode(): Promise<void> {
-    // fullscreen pseudo class is hidden (doesn't exist)
-    await expect(global.page.locator(this.elements.modelViewportWrapperFullscreen)).toBeHidden()
   }
 
   async toggleFullscreenMode(): Promise<void> {
@@ -105,13 +96,12 @@ export class Viewer {
         */
   }
 
-  // helper function
+  // helper function (so far not used)
   async getComputedStyleForSelector(selector: string, cssAttribute: string): Promise<string> {
     const element = await global.page.waitForSelector(selector)
     const value = await element.evaluate((el) => {
       return window.getComputedStyle(el).getPropertyValue(cssAttribute)
     })
-    return value
-    //returns Promise object
+    return value // return value is Promise object
   }
 }
