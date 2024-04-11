@@ -12,7 +12,7 @@ export class Viewer {
     controlButtonPrev: '.preview-controls-previous',
     controlButtonNext: '.preview-controls-next',
     controlButtonFullscreen: '.preview-controls-fullscreen',
-    controlButtonReset: '. preview-controls-reset'
+    controlButtonReset: '.preview-controls-reset'
   }
 
   async getViewportDescription(): Promise<string> {
@@ -64,13 +64,27 @@ export class Viewer {
   }
 
   async modifyModelRotation(): Promise<void> {
-    // to be implemented
-    // modify camera.rotation with random value or initiate some mouse event?
+    await global.page.locator(this.elements.modelViewportCanvas).focus()
+
+    // defining some values for mouse movement that will certainly be within viewport
+    const viewportBoundingBox = await global.page
+      .locator(this.elements.modelViewportCanvas)
+      .boundingBox()
+    const spacing = 180
+    const xMouseStartCoordinate = viewportBoundingBox.x + spacing
+    const xMouseEndCoordinate = viewportBoundingBox.x + viewportBoundingBox.width - 2 * spacing
+    const yMouseCoordinate = viewportBoundingBox.y + viewportBoundingBox.height / 2
+
+    await global.page.mouse.move(xMouseStartCoordinate, yMouseCoordinate)
+    await global.page.mouse.down()
+    await global.page.mouse.move(xMouseEndCoordinate, yMouseCoordinate)
+    await global.page.mouse.up()
   }
 
   async modifyModelZoom(): Promise<void> {
     // to be implemented
     // modify camera.position.z with random value
+    await global.page.locator(this.elements.modelViewportCanvas).mouse.wheel()
   }
 
   async modifyModel(): Promise<void> {
