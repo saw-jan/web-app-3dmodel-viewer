@@ -85,31 +85,25 @@ Then('the 3D model should be display in standard mode', async function (): Promi
 
 When('the user rotates the model', async function (): Promise<void> {
   await viewer.modifyModelRotation()
-  // for testing only to see the interaction take place
-  await delay(1000)
 })
 
 When('the user zooms into the model', async function (): Promise<void> {
   await viewer.modifyModelZoom()
-  // for testing only to see the interaction take place
-  await delay(1000)
 })
 
 Then('the size and position of the 3D model will be changed accordingly', function () {
   // not sure how to test this? maybe check if rotation and zoom factor differ from original position?
-  // check if camera.position and camera.position.z have been modified (!= initCamPosition)
+  // check if camera.position and camera.position.z have been modified (!= initCamPosition)?
   return 'pending'
 })
 
 When('the user resets the viewport', async function (): Promise<void> {
   await viewer.resetViewport()
-  // for testing only to see the interaction take place
-  await delay(1000)
 })
 
 Then('the 3D model should be display in the default size and position', function () {
   // not sure how to test this?
-  // check if camera.position and camera.position.z are equal to initCamPosition
+  // check if camera.position and camera.position.z are equal to initCamPosition?
   return 'pending'
 })
 
