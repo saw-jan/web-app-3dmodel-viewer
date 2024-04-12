@@ -1,6 +1,5 @@
 export class Viewer {
   elements: Readonly<Record<string, string>> = {
-    appbarResourceNameSelector: '#app-top-bar-resource [data-test-resource-name="%s"]',
     appTopBar: '.oc-app-top-bar .oc-resource',
     appTopBarResourceBasename: '.oc-resource-basename',
     appTopBarResourceExtension: '.oc-resource-extension',
@@ -83,15 +82,7 @@ export class Viewer {
 
   async modifyModelZoom(): Promise<void> {
     await global.page.locator(this.elements.modelViewportCanvas).focus()
-    await global.page.mouse.wheel(50, 0)
-  }
-
-  // helper function
-  async getComputedStyleForSelector(selector: string, cssAttribute: string): Promise<string> {
-    const element = await global.page.waitForSelector(selector)
-    const value = await element.evaluate((el) => {
-      return window.getComputedStyle(el).getPropertyValue(cssAttribute)
-    })
-    return value // return value is Promise object
+    await global.page.mouse.move(100, 100)
+    await global.page.mouse.wheel(0, -200)
   }
 }
