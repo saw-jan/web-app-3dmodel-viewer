@@ -7,7 +7,7 @@ export class Viewer {
     modelViewport: '#preview .model-viewport',
     modelViewportWrapper: '#preview #scene-wrapper',
     modelViewportWrapperFullscreen: '#scene-wrapper:fullscreen',
-    modelViewportDescription: '#preview h1.oc-invisible-sr', // 'oc-hidden-announcer',
+    modelViewportDescription: '#preview h1.oc-invisible-sr',
     modelViewportCanvas: '#preview .model-viewport canvas',
     controlButtonPrev: '.preview-controls-previous',
     controlButtonNext: '.preview-controls-next',
@@ -82,43 +82,11 @@ export class Viewer {
   }
 
   async modifyModelZoom(): Promise<void> {
-    // to be implemented
-    // modify camera.position.z with random value
-    await global.page.locator(this.elements.modelViewportCanvas).mouse.wheel()
+    await global.page.locator(this.elements.modelViewportCanvas).focus()
+    await global.page.mouse.wheel(50, 0)
   }
 
-  async modifyModel(): Promise<void> {
-    // select viewport
-    // locator.focus()	Focus the element
-    // move or wheel mouse interaction
-    // await global.page.locator(this.elements.??).mouse.move()
-    // mousewheel?
-    // https://www.lambdatest.com/automation-testing-advisor/javascript/playwright-internal-mouseWheel
-    /*
-        https://playwright.dev/python/docs/api/class-mouse
-        mouse.wheel(delta_x, delta_y)
-        - delta_x (float#): Pixels to scroll horizontally
-        - delta_y (float#): Pixels to scroll vertically
-
-        await global.page.locator(this.elements.??).mouse.wheel()
-        */
-    /*
-        https://webscraping.ai/faq/playwright/how-to-handle-mouse-actions-using-playwright
-        await global.page.locator().mouse.move(startX, startY)
-        await global.page.mouse.down()
-        await global.page.mouse.move(endX, endY)
-        await global.page.mouse.up()
-        */
-    /*
-        https://playwright.dev/docs/input#mouse-click
-        await page.locator('#item-to-be-dragged').hover();
-        await page.mouse.down();
-        await page.locator('#item-to-drop-at').hover();
-        await page.mouse.up();
-        */
-  }
-
-  // helper function (so far not used)
+  // helper function
   async getComputedStyleForSelector(selector: string, cssAttribute: string): Promise<string> {
     const element = await global.page.waitForSelector(selector)
     const value = await element.evaluate((el) => {
