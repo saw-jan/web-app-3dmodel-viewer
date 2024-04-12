@@ -6,7 +6,7 @@ export class Ocis {
     passwordSelector: '#oc-login-password',
     loginButtonSelector: 'button[type="submit"]',
     webContentSelector: '#web-content',
-    resourceNameSelector: '#files-space-table [data-test-resource-name="%s"]',
+    resourceNameSelector: '#files-space-table [data-test-resource-name="%s"]'
   }
 
   async login({ username, password }): Promise<void> {
