@@ -7,8 +7,6 @@ export class Ocis {
     loginButtonSelector: 'button[type="submit"]',
     webContentSelector: '#web-content',
     resourceNameSelector: '#files-space-table [data-test-resource-name="%s"]',
-    userMenuButtonSelector: '#_userMenuButton',
-    logoutSelector: '#oc-topbar-account-logout'
   }
 
   async login({ username, password }): Promise<void> {
@@ -20,11 +18,5 @@ export class Ocis {
 
   async previewFile(filename: string): Promise<void> {
     await global.page.locator(util.format(this.elements.resourceNameSelector, filename)).click()
-  }
-
-  // function currently not used in the given scenario...
-  async logout(): Promise<void> {
-    await global.page.locator(this.elements.userMenuButtonSelector).click()
-    await global.page.locator(this.elements.logoutSelector).click()
   }
 }
