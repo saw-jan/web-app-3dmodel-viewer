@@ -7,7 +7,7 @@ services:
     ports:
       - 9200:9200
     environment:
-      OCIS_URL: https://localhost:9200 
+      OCIS_URL: https://localhost:9200
       OCIS_INSECURE: true
       OCIS_LOG_LEVEL: error
       IDM_ADMIN_PASSWORD: admin
