@@ -4,7 +4,7 @@ import config from '../config'
 
 import { Ocis } from '../pageObjects/Ocis'
 import { Viewer } from '../pageObjects/Viewer'
-import { uploadFile, delay } from '../utils/helpers'
+import { uploadFile } from '../utils/helpers'
 
 const ocis = new Ocis()
 const viewer = new Viewer()
@@ -39,8 +39,8 @@ Then(
     // check if viewport and canvas are visible
     await expect(global.page.locator(viewer.elements.modelViewport)).toBeVisible()
     await expect(global.page.locator(viewer.elements.modelViewportCanvas)).toBeVisible()
-    // add some delay to allow model to be loaded
-    await delay(1000)
+    // wait for model (and its description) to be loaded
+    await global.page.waitForSelector(viewer.elements.modelViewportDescription)
     // check if the filename is displayed in hidden h1 title element of the viewport
     const viewportDescription = await viewer.getViewportDescription()
     expect(viewportDescription).toContain(filename)
