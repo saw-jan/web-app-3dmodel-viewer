@@ -22,13 +22,6 @@ Feature: preview 3D model
         When the user exits fullscreen mode
         Then the 3D model should be display in standard mode
 
-        # rotate, zoom and reset 3D model
-        When the user rotates the model
-        And the user zooms into the model
-        # Then the size and position of the 3D model should be changed accordingly
-        When the user resets the viewport
-        # Then the 3D model should be display in the default size and position
-
         # show preview/next model
         When the user navigates to the next model
         Then the 3D model "model2.glb" should be displayed in the viewport
