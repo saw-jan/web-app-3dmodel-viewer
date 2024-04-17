@@ -83,30 +83,6 @@ Then('the 3D model should be display in standard mode', async function (): Promi
   await expect(global.page.locator(viewer.elements.appTopBar)).toBeVisible()
 })
 
-When('the user rotates the model', async function (): Promise<void> {
-  await viewer.modifyModelRotation()
-})
-
-When('the user zooms into the model', async function (): Promise<void> {
-  await viewer.modifyModelZoom()
-})
-
-Then('the size and position of the 3D model will be changed accordingly', function () {
-  // not sure how to test this? maybe check if rotation and zoom factor differ from original position?
-  // check if camera.position and camera.position.z have been modified (!= initCamPosition)?
-  return 'pending'
-})
-
-When('the user resets the viewport', async function (): Promise<void> {
-  await viewer.resetViewport()
-})
-
-Then('the 3D model should be display in the default size and position', function () {
-  // not sure how to test this?
-  // check if camera.position and camera.position.z are equal to initCamPosition?
-  return 'pending'
-})
-
 When('the user navigates to the next model', async function (): Promise<void> {
   await viewer.displayNextModel()
 })
