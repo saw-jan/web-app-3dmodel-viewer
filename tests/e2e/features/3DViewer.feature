@@ -20,7 +20,7 @@ Feature: preview 3D model
         When the user enters fullscreen mode
         Then the 3D model should be displayed in fullscreen mode
         When the user exits fullscreen mode
-        Then the 3D model should be display in standard mode
+        Then the 3D model should be displayed in standard mode
 
         # show preview/next model
         When the user navigates to the next model

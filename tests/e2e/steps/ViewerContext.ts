@@ -76,7 +76,7 @@ When('the user exits fullscreen mode', async function (): Promise<void> {
   await viewer.toggleFullscreenMode()
 })
 
-Then('the 3D model should be display in standard mode', async function (): Promise<void> {
+Then('the 3D model should be displayed in standard mode', async function (): Promise<void> {
   // check if fullscreen pseudo class is hidden (doesn't exist)
   await expect(global.page.locator(viewer.elements.modelViewportWrapperFullscreen)).toBeHidden()
   // check if top bar is visible
