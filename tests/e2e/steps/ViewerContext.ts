@@ -54,7 +54,7 @@ Then(
     await expect(global.page.locator(viewer.elements.appTopBar)).toBeVisible()
     // check if correct file name is displayed
     const topbarFilename = await viewer.getTopbarResourceName()
-    expect(topbarFilename).toContain(filename)
+    expect(topbarFilename).toBe(filename)
   }
 )
 
