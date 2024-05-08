@@ -16,7 +16,9 @@ Given(
     for (const file of filesForUpload.hashes()) {
       await uploadFile(file.filename)
       // assert if file is listed in the file list after upload
-      const locator = await global.page.locator(util.format(ocis.elements.resourceNameSelector, file.filename)).toString()
+      const locator = await global.page
+        .locator(util.format(ocis.elements.resourceNameSelector, file.filename))
+        .toString()
       expect(locator).toContain(file.filename)
     }
   }
