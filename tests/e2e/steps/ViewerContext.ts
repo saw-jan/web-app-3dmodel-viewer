@@ -5,6 +5,7 @@ import config from '../config'
 import { Ocis } from '../pageObjects/Ocis'
 import { Viewer } from '../pageObjects/Viewer'
 import { uploadFile } from '../utils/helpers'
+import util from 'util'
 
 const ocis = new Ocis()
 const viewer = new Viewer()
@@ -14,6 +15,9 @@ Given(
   async function (filesForUpload: DataTable): Promise<void> {
     for (const file of filesForUpload.hashes()) {
       await uploadFile(file.filename)
+      // assert if file is listed in the file list after upload
+      const locator = await global.page.locator(util.format(ocis.elements.resourceNameSelector, file.filename)).toString()
+      expect(locator).toContain(file.filename)
     }
   }
 )
@@ -24,6 +28,7 @@ Given(
     await global.page.goto(config.baseUrlOcis)
     await ocis.login({ username: user, password: password })
   }
+  // to do: assert that the user has successfully logged in
 )
 
 When(
