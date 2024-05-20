@@ -91,9 +91,9 @@ Then('the 3D model should be displayed in standard mode', async function (): Pro
 })
 
 When('the user navigates to the next model', async function (): Promise<void> {
-  await viewer.displayNextModel()
+  await viewer.navigateToNextModel()
 })
 
 When('the user navigates to the previous model', async function (): Promise<void> {
-  await viewer.displayPreviousModel()
+  await viewer.navigateToPreviousModel()
 })

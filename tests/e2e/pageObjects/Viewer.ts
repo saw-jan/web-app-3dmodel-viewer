@@ -49,11 +49,11 @@ export class Viewer {
     await global.page.locator(this.elements.controlButtonFullscreen).click()
   }
 
-  async displayNextModel(): Promise<void> {
+  async navigateToNextModel(): Promise<void> {
     await global.page.locator(this.elements.controlButtonNext).click()
   }
 
-  async displayPreviousModel(): Promise<void> {
+  async navigateToPreviousModel(): Promise<void> {
     await global.page.locator(this.elements.controlButtonPrev).click()
   }
 }
