@@ -8,7 +8,7 @@ export class Viewer {
     modelViewportWrapperFullScreen: '#scene-wrapper:fullscreen',
     modelViewportDescription: '#preview h1.oc-invisible-sr',
     modelViewportCanvas: '#preview .model-viewport canvas',
-    controlButtonPrev: '.preview-controls-previous',
+    controlButtonPrevious: '.preview-controls-previous',
     controlButtonNext: '.preview-controls-next',
     controlButtonFullScreen: '.preview-controls-fullscreen'
   }
@@ -54,6 +54,6 @@ export class Viewer {
   }
 
   async navigateToPreviousModel(): Promise<void> {
-    await global.page.locator(this.elements.controlButtonPrev).click()
+    await global.page.locator(this.elements.controlButtonPrevious).click()
   }
 }
