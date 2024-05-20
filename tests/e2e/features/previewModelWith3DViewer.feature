@@ -4,7 +4,7 @@ Feature: preview 3D model
     So that I can make sure this is the correct file (e.g. before sharing it with others)
 
 
-    Scenario: preview 3D model
+    Scenario: preview model with 3D viewer
         Given the following 3D models have been uploaded:
             | filename   |
             | model1.glb |
