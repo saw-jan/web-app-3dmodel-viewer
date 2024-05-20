@@ -59,7 +59,6 @@ Then(
   async function (filename: string): Promise<void> {
     // check if topbar is visible
     await expect(global.page.locator(viewer.elements.appTopBar)).toBeVisible()
-    // check if correct file name is displayed
     const topbarFilename = await viewer.getTopbarResourceName()
     expect(topbarFilename).toBe(filename)
   }
