@@ -16,10 +16,10 @@ Feature: preview 3D model
         Then the 3D model "model1.glb" should be displayed in the viewport
         And the file name "model1.glb" should be shown in the topbar
 
-        # toggle between standard and fullscreen mode
-        When the user enters fullscreen mode
-        Then the 3D model should be displayed in fullscreen mode
-        When the user exits fullscreen mode
+        # toggle between standard mode and full screen mode
+        When the user enters full screen mode
+        Then the 3D model should be displayed in full screen mode
+        When the user exits full screen mode
         Then the 3D model should be displayed in standard mode
 
         # show preview/next model

@@ -64,27 +64,27 @@ Then(
   }
 )
 
-When('the user enters fullscreen mode', async function (): Promise<void> {
-  await viewer.toggleFullscreenMode()
+When('the user enters full screen mode', async function (): Promise<void> {
+  await viewer.toggleFullScreenMode()
 })
 
-Then('the 3D model should be displayed in fullscreen mode', async function (): Promise<void> {
+Then('the 3D model should be displayed in full screen mode', async function (): Promise<void> {
   const viewportWrapperSize = await viewer.getViewportWrapperSize()
   const windowInnerSize = await viewer.getWindowInnerSize()
-  // in fullscreen mode, model viewport wrapper should have same size as browser window
+  // in full screen mode, model viewport wrapper should have same size as browser window
   expect(viewportWrapperSize[0]).toBe(windowInnerSize[0])
   expect(viewportWrapperSize[1]).toBe(windowInnerSize[1])
-  // additionally test if fullscreen pseudo class exists
-  await expect(global.page.locator(viewer.elements.modelViewportWrapperFullscreen)).toBeVisible()
+  // additionally test if full screen pseudo class exists
+  await expect(global.page.locator(viewer.elements.modelViewportWrapperFullScreen)).toBeVisible()
 })
 
-When('the user exits fullscreen mode', async function (): Promise<void> {
-  await viewer.toggleFullscreenMode()
+When('the user exits full screen mode', async function (): Promise<void> {
+  await viewer.toggleFullScreenMode()
 })
 
 Then('the 3D model should be displayed in standard mode', async function (): Promise<void> {
-  // check if fullscreen pseudo class is hidden (doesn't exist)
-  await expect(global.page.locator(viewer.elements.modelViewportWrapperFullscreen)).toBeHidden()
+  // check if full screen pseudo class is hidden (doesn't exist)
+  await expect(global.page.locator(viewer.elements.modelViewportWrapperFullScreen)).toBeHidden()
   // check if top bar is visible
   await expect(global.page.locator(viewer.elements.appTopBar)).toBeVisible()
 })

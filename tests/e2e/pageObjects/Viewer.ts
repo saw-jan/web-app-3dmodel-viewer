@@ -5,12 +5,12 @@ export class Viewer {
     appTopBarResourceExtension: '.oc-resource-extension',
     modelViewport: '#preview .model-viewport',
     modelViewportWrapper: '#preview #scene-wrapper',
-    modelViewportWrapperFullscreen: '#scene-wrapper:fullscreen',
+    modelViewportWrapperFullScreen: '#scene-wrapper:fullscreen',
     modelViewportDescription: '#preview h1.oc-invisible-sr',
     modelViewportCanvas: '#preview .model-viewport canvas',
     controlButtonPrev: '.preview-controls-previous',
     controlButtonNext: '.preview-controls-next',
-    controlButtonFullscreen: '.preview-controls-fullscreen'
+    controlButtonFullScreen: '.preview-controls-fullscreen'
   }
 
   async getViewportDescription(): Promise<string> {
@@ -45,8 +45,8 @@ export class Viewer {
     return [windowInnerHeight.toString(), windowInnerWidth.toString()]
   }
 
-  async toggleFullscreenMode(): Promise<void> {
-    await global.page.locator(this.elements.controlButtonFullscreen).click()
+  async toggleFullScreenMode(): Promise<void> {
+    await global.page.locator(this.elements.controlButtonFullScreen).click()
   }
 
   async navigateToNextModel(): Promise<void> {
