@@ -50,7 +50,7 @@ Then(
     await global.page.waitForSelector(viewer.elements.modelViewportDescription)
     // check if the filename is displayed in hidden h1 title element of the viewport
     const viewportDescription = await viewer.getViewportDescription()
-    expect(viewportDescription).toContain(filename)
+    expect(viewportDescription).toBe(filename)
   }
 )
 
