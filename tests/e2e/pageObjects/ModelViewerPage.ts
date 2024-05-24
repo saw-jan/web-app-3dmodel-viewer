@@ -1,4 +1,4 @@
-export class Viewer {
+export class ModelViewerPage {
   elements: Readonly<Record<string, string>> = {
     appTopBar: '.oc-app-top-bar .oc-resource',
     appTopBarResourceBasename: '.oc-resource-basename',

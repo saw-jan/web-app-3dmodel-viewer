@@ -3,12 +3,12 @@ import { expect } from '@playwright/test'
 import config from '../config'
 
 import { OcisWebPage } from '../pageObjects/OcisWebPage'
-import { Viewer } from '../pageObjects/Viewer'
+import { ModelViewerPage } from '../pageObjects/ModelViewerPage'
 import { uploadFile } from '../utils/helpers'
 import util from 'util'
 
 const ocis = new OcisWebPage()
-const viewer = new Viewer()
+const viewer = new ModelViewerPage()
 
 Given(
   'the following 3D models have been uploaded:',
