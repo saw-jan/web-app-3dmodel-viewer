@@ -14,11 +14,13 @@ export class Viewer {
   }
 
   async getViewportDescription(): Promise<string> {
-    const viewportDescription = await global.page.locator(this.elements.modelViewportDescription).innerText()
+    const viewportDescription = await global.page
+      .locator(this.elements.modelViewportDescription)
+      .innerText()
     // removing the string "Preview for "
     // because the locator modelVieportDescription returns "Preview for <filename>"
     // instead of just <filename>
-    return viewportDescription.replace('Preview for ','')
+    return viewportDescription.replace('Preview for ', '')
   }
 
   async getTopbarResourceName(): Promise<string> {
