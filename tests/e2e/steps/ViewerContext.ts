@@ -2,12 +2,12 @@ import { Given, When, Then, DataTable } from '@cucumber/cucumber'
 import { expect } from '@playwright/test'
 import config from '../config'
 
-import { Ocis } from '../pageObjects/Ocis'
+import { OcisWebPage } from '../pageObjects/OcisWebPage'
 import { Viewer } from '../pageObjects/Viewer'
 import { uploadFile } from '../utils/helpers'
 import util from 'util'
 
-const ocis = new Ocis()
+const ocis = new OcisWebPage()
 const viewer = new Viewer()
 
 Given(
