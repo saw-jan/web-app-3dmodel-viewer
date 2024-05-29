@@ -29,8 +29,9 @@ Given(
   async function (user: string, password: string): Promise<void> {
     await global.page.goto(config.baseUrlOcis)
     await ocis.login({ username: user, password: password })
+    // assert that the user has successfully logged in
+    await global.page.locator(ocis.elements.webContentSelector).waitFor()
   }
-  // to do: assert that the user has successfully logged in
 )
 
 When(
