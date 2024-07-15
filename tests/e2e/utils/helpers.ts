@@ -50,13 +50,22 @@ const deleteFile = async (filename): Promise<any> => {
     method: 'DELETE',
     path: getWebDavFilePath(config.adminUser, filename)
   })
-  //console.log('delete file response status code: ' + response.status) // 204
   return response.status
 }
 
 export const deleteAllFiles = async (): Promise<void> => {
-  while (uploadedFiles.length > 0) {
-    await deleteFile(uploadedFiles.pop())
+  var numberOfDeletedFiles = 0
+  for (const file of uploadedFiles) {
+    const responseStatus = await deleteFile(file)
+    if (responseStatus == 204) {
+      numberOfDeletedFiles++
+    } else {
+      throw new Error(`Failed to delete file ${file}`)
+    }
+  }
+  // removing all values from uploadedFiles array if all files have been deleted successfully
+  if (numberOfDeletedFiles == uploadedFiles.length) {
+    uploadedFiles.splice(0, numberOfDeletedFiles)
   }
 }
 
