@@ -45,11 +45,13 @@ export const uploadFile = async (filename: string): Promise<any> => {
   return response.status
 }
 
-const deleteFile = async (filename): Promise<void> => {
-  return await makeApiRequest({
+const deleteFile = async (filename): Promise<any> => {
+  const response = await makeApiRequest({
     method: 'DELETE',
     path: getWebDavFilePath(config.adminUser, filename)
   })
+  //console.log('delete file response status code: ' + response.status) // 204
+  return response.status
 }
 
 export const deleteAllFiles = async (): Promise<void> => {
