@@ -14,7 +14,9 @@ Given(
   'the following 3D models have been uploaded:',
   async function (filesForUpload: DataTable): Promise<void> {
     for (const file of filesForUpload.hashes()) {
-      await uploadFile(file.filename)
+      const responseStatus = await uploadFile(file.filename)
+      // assert response status code
+      expect(responseStatus).toBe(201)
       // assert if file is listed in the file list after upload
       const locator = await global.page
         .locator(util.format(ocis.elements.resourceNameSelector, file.filename))

@@ -29,7 +29,7 @@ const makeApiRequest = ({ method, path, data = null }): Promise<any> => {
   }
 }
 
-export const uploadFile = async (filename: string): Promise<void> => {
+export const uploadFile = async (filename: string): Promise<any> => {
   const fileUploadUrl = getWebDavFilePath(config.adminUser, filename)
   const filePath = _path.join(config.assets, filename)
   const fileContent = fs.readFileSync(filePath)
@@ -42,6 +42,7 @@ export const uploadFile = async (filename: string): Promise<void> => {
     throw new Error(`Failed to upload file ${filename}`)
   }
   uploadedFiles.push(filename)
+  return response.status
 }
 
 const deleteFile = async (filename): Promise<void> => {
