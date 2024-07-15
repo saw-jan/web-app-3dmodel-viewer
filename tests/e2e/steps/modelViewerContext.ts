@@ -2,13 +2,13 @@ import { Given, When, Then, DataTable } from '@cucumber/cucumber'
 import { expect } from '@playwright/test'
 import config from '../config'
 
-import { OcisWebPage } from '../pageObjects/OcisWebPage'
-import { ModelViewerPage } from '../pageObjects/ModelViewerPage'
+import { ocisWebPage } from '../pageObjects/ocisWebPage'
+import { modelViewerPage } from '../pageObjects/modelViewerPage'
 import { uploadFile } from '../utils/helpers'
 import util from 'util'
 
-const ocis = new OcisWebPage()
-const viewer = new ModelViewerPage()
+const ocis = new ocisWebPage()
+const viewer = new modelViewerPage()
 
 Given(
   'the following 3D models have been uploaded:',
