@@ -54,7 +54,7 @@ const deleteFile = async (filename): Promise<any> => {
 }
 
 export const deleteAllFiles = async (): Promise<void> => {
-  var numberOfDeletedFiles = 0
+  let numberOfDeletedFiles = 0
   for (const file of uploadedFiles) {
     const responseStatus = await deleteFile(file)
     if (responseStatus == 204) {
