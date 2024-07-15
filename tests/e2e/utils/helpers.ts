@@ -69,9 +69,13 @@ export const deleteAllFiles = async (): Promise<void> => {
   }
 }
 
-export const emptyTrashbin = async (): Promise<void> => {
-  return await makeApiRequest({
+export const emptyTrashbin = async (): Promise<any> => {
+  const response = await makeApiRequest({
     method: 'DELETE',
     path: getWebDavTrashbinPath(config.adminUser)
   })
+  if (response.status !== 204) {
+    throw new Error(`Failed to empty trashbin`)
+  }
+  return response.status
 }
