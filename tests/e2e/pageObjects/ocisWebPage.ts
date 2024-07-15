@@ -1,6 +1,6 @@
 import util from 'util'
 
-export class OcisWebPage {
+export class ocisWebPage {
   elements: Readonly<Record<string, string>> = {
     userNameSelector: '#oc-login-username',
     passwordSelector: '#oc-login-password',
