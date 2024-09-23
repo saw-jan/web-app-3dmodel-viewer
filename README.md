@@ -11,6 +11,7 @@ This is an extension for [ownCloud web](https://github.com/owncloud/web) for vie
 - Fullscreen view
 - Navigate between model files
 
+## [Demonstration](https://ocis.in-nepal.de/s/dSlOHjJcQSYuPxV)
 
 ## Build and Run
 
