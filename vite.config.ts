@@ -3,6 +3,7 @@ import { defineConfig } from 'vite'
 import { id } from './public/manifest.json'
 
 export default defineConfig({
+  base: `/assets/apps/${id}`,
   build: {
     rollupOptions: {
       external: ['vue', '@ownclouders/web-client', '@ownclouders/web-pkg'],

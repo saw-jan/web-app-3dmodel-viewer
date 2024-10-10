@@ -72,6 +72,7 @@ import {
 } from '@ownclouders/web-pkg'
 import { Resource } from '@ownclouders/web-client/src'
 import PreviewControls from './components/PreviewControls.vue'
+import { id as appId } from '../public/manifest.json'
 
 const environment = new URL('./assets/custom_light.jpg', import.meta.url).href
 const supportExtensions = ['glb']
@@ -80,8 +81,8 @@ const router = useRouter()
 const route = useRoute()
 const contextRouteQuery = useRouteQuery('contextRouteQuery')
 const { getUrlForResource } = useAppFileHandling({ clientService: useClientService() })
-const { activeFiles, currentFileContext, closeApp, loadFolderForFileContext } = useAppDefaults({
-  applicationId: '3dmodel-viewer'
+const { activeFiles, currentFileContext, loadFolderForFileContext } = useAppDefaults({
+  applicationId: appId
 })
 
 // 3d canvas
@@ -91,6 +92,16 @@ let iniCamPosition: Vector3 | null = null
 let iniCamZPosition: number = 0
 const iniCamRotation: Euler = new Euler(0, 0, 0)
 const animTimeoutSec = 2
+
+// =====================
+// props
+// =====================
+defineProps({
+  url: {
+    type: String,
+    required: true
+  }
+})
 
 // =====================
 // states
@@ -103,7 +114,7 @@ const loadingProgress = ref<number>(0)
 const isFullScreenModeActivated = ref<boolean>(false)
 const activeIndex = ref<number>(0)
 const animationId = ref<number | undefined>()
-const url = ref<string>()
+const currentUrl = ref<string>()
 const currentModel = ref()
 
 // =====================
@@ -178,7 +189,10 @@ const fileId = computed(() => unref(currentFileContext).itemId)
 // methods
 // =====================
 async function updateUrl() {
-  url.value = await getUrlForResource(unref(currentFileContext).space, unref(activeModelFile))
+  currentUrl.value = await getUrlForResource(
+    unref(currentFileContext).space,
+    unref(activeModelFile)
+  )
 }
 async function loadEnvironment() {
   const texture = await new TextureLoader().loadAsync(environment)
@@ -186,7 +200,7 @@ async function loadEnvironment() {
   scene.environment = texture
 }
 async function renderModel() {
-  const model = await new GLTFLoader().loadAsync(unref(url), (xhr) => {
+  const model = await new GLTFLoader().loadAsync(unref(currentUrl), (xhr) => {
     const downloaded = Math.floor((xhr.loaded / xhr.total) * 100)
     if (downloaded % 5 === 0) {
       loadingProgress.value = downloaded
