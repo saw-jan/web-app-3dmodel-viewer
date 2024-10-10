@@ -12,7 +12,6 @@ services:
       OCIS_LOG_LEVEL: error
       IDM_ADMIN_PASSWORD: admin
       PROXY_ENABLE_BASIC_AUTH: true
-      WEB_UI_CONFIG_FILE: /etc/ocis/web.json
       WEB_ASSET_APPS_PATH: /etc/ocis/webapps
     volumes:
       - ./dist:/etc/ocis/webapps:ro

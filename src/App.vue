@@ -1,46 +1,44 @@
 <template>
-  <div>
-    <div
-      v-if="hasWebGLSupport"
-      id="scene-wrapper"
-      ref="sceneWrapper"
-      :class="isModelReady ? 'model-viewport' : ''"
-      @mousedown="changeCursor('grabbing')"
-      @mouseup="changeCursor('grab')"
-    >
-      <div v-if="hasError">
-        <NoContentMessage icon="file-warning">
-          <template #message>
-            <span>Something went wrong. Cannot render the model</span>
-          </template>
-        </NoContentMessage>
-      </div>
-      <div
-        v-else-if="!isModelReady"
-        id="spinner"
-        class="oc-flex oc-flex-column oc-flex-middle oc-flex-center oc-height-1-1 oc-width-1-1"
-      >
-        <AppLoadingSpinner />
-        <label class="oc-p-s">{{ loadingProgress }}%</label>
-      </div>
-      <PreviewControls
-        class="oc-position-absolute oc-position-bottom-center"
-        :files="modelFiles"
-        :active-index="activeIndex"
-        :is-full-screen-mode-activated="isFullScreenModeActivated"
-        @toggle-previous="prev"
-        @toggle-next="next"
-        @toggle-full-screen="toggleFullscreenMode"
-        @reset-position="resetModelPosition"
-      />
-    </div>
-    <div v-else>
-      <NoContentMessage icon="error-warning">
+  <div
+    v-if="hasWebGLSupport"
+    id="scene-wrapper"
+    ref="sceneWrapper"
+    :class="isModelReady ? 'model-viewport' : ''"
+    @mousedown="changeCursor('grabbing')"
+    @mouseup="changeCursor('grab')"
+  >
+    <div v-if="hasError">
+      <NoContentMessage icon="file-warning">
         <template #message>
-          <span>This browser doesn't support WebGL</span>
+          <span>Something went wrong. Cannot render the model</span>
         </template>
       </NoContentMessage>
     </div>
+    <div
+      v-else-if="!isModelReady"
+      id="spinner"
+      class="oc-flex oc-flex-column oc-flex-middle oc-flex-center oc-height-1-1 oc-width-1-1"
+    >
+      <AppLoadingSpinner />
+      <label class="oc-p-s">{{ loadingProgress }}%</label>
+    </div>
+    <PreviewControls
+      class="oc-position-absolute oc-position-bottom-center"
+      :files="modelFiles"
+      :active-index="activeIndex"
+      :is-full-screen-mode-activated="isFullScreenModeActivated"
+      @toggle-previous="prev"
+      @toggle-next="next"
+      @toggle-full-screen="toggleFullscreenMode"
+      @reset-position="resetModelPosition"
+    />
+  </div>
+  <div v-else>
+    <NoContentMessage icon="error-warning">
+      <template #message>
+        <span>This browser doesn't support WebGL</span>
+      </template>
+    </NoContentMessage>
   </div>
 </template>
 
@@ -70,9 +68,7 @@ import {
   useRoute,
   useRouter,
   useAppFileHandling,
-  useClientService,
-  AppBanner,
-  AppTopBar
+  useClientService
 } from '@ownclouders/web-pkg'
 import { Resource } from '@ownclouders/web-client/src'
 import PreviewControls from './components/PreviewControls.vue'
