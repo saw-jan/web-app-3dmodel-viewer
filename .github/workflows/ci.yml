@@ -1,13 +1,13 @@
-name: lint-code
+name: build-lint
 
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
 
 jobs:
-  lint:
+  ci:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
@@ -18,5 +18,18 @@ jobs:
         with:
           run_install: |
             - args: [--frozen-lockfile, --strict-peer-dependencies]
+
       - name: lint
         run: pnpm lint
+        if: github.event_name != 'release'
+
+      - name: build
+        run: pnpm build
+
+      - name: upload-dist
+        uses: actions/upload-artifact@v4
+        if: github.event_name == 'release'
+        with:
+          name: dist
+          path: dist/
+          retention-days: 1

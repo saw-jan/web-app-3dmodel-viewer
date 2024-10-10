@@ -1,0 +1,34 @@
+name: release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+
+  publish-artifacts:
+    needs: [ci]
+    runs-on: ubuntu-latest
+    steps:
+      - name: download-dist
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: create-artifacts
+        run: |
+          (cd dist && zip -r - .) >3dviewer-${{ github.ref_name }}.zip
+          mkdir -p dist/release
+          mv 3dviewer-${{ github.ref_name }}.zip dist/release/
+          md5sum dist/release/3dviewer-${{ github.ref_name }}.zip >dist/release/md5sum.txt
+          sha256sum dist/release/3dviewer-${{ github.ref_name }}.zip >dist/release/sha256sum.txt
+
+      - name: publish-artifacts
+        uses: fnkr/github-action-ghr@v1
+        env:
+          GHR_PATH: dist/release/
+          GHR_REPLACE: true
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
