@@ -53,6 +53,7 @@
 import { ref, unref, onMounted, onBeforeUnmount, computed } from 'vue'
 import {
   Scene,
+  Mesh,
   PerspectiveCamera,
   WebGLRenderer,
   ACESFilmicToneMapping,
@@ -60,10 +61,11 @@ import {
   Box3,
   Vector3,
   Euler,
-  TextureLoader
+  TextureLoader, Cache, MeshBasicMaterial
 } from 'three'
 import WebGL from 'three/examples/jsm/capabilities/WebGL'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+import { STLLoader } from 'three/examples/jsm/loaders/STLLoader'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import {
   AppLoadingSpinner,
@@ -81,9 +83,10 @@ import {
 } from '@ownclouders/web-pkg'
 import { Resource } from '@ownclouders/web-client/src'
 import PreviewControls from './components/PreviewControls.vue'
+import files = Cache.files;
 
 const environment = new URL('./assets/custom_light.jpg', import.meta.url).href
-const supportExtensions = ['glb']
+const supportExtensions = ['glb','stl']
 
 const router = useRouter()
 const route = useRoute()
@@ -135,13 +138,13 @@ onMounted(async () => {
 
     // camera controls
     controls = new OrbitControls(camera, renderer.domElement)
-    controls.minDistance = 1
+    controls.minDistance = 0
     controls.maxDistance = 100
 
     // load environment texture
     try {
       await loadEnvironment()
-      await renderModel()
+      await renderModel(unref(fileType))
     } catch (e) {
       cleanup3dScene()
       hasError.value = true
@@ -182,6 +185,7 @@ const modelFiles = computed<Resource[]>(() => {
 const activeModelFile = computed(() => unref(modelFiles)[unref(activeIndex)])
 const pageTitle = computed(() => `Preview for ${unref(activeModelFile)?.name}`)
 const fileId = computed(() => unref(currentFileContext).itemId)
+const fileType = computed(() => unref(activeModelFile)?.extension)
 
 // =====================
 // methods
@@ -194,17 +198,57 @@ async function loadEnvironment() {
   texture.mapping = EquirectangularReflectionMapping
   scene.environment = texture
 }
-async function renderModel() {
-  const model = await new GLTFLoader().loadAsync(unref(url), (xhr) => {
+
+const LoaderMap = {
+  glb: GLTFLoader,
+  stl: STLLoader,
+}
+
+
+async function renderModel(extension: string) {
+  console.log('####################')
+  console.log(extension)
+  console.log('####################')
+
+  const ModelLoader = LoaderMap[extension];
+
+  // let ModelLoader = new GLTFLoader();
+  // if (extension === 'stl') {
+  //   ModelLoader = new STLLoader();
+  // }
+
+  const model = await new ModelLoader().loadAsync(unref(url), (xhr) => {
     const downloaded = Math.floor((xhr.loaded / xhr.total) * 100)
     if (downloaded % 5 === 0) {
       loadingProgress.value = downloaded
     }
-  })
+  }
+  )
 
   const modelScene = model.scene
-  // model size
-  const box = new Box3().setFromObject(modelScene)
+  const box = new Box3()
+  // console.log('####################')
+  if (!model.hasOwnProperty('scene')) {
+    // model.options.opacity = 0.9
+    // model.color = '#d7d7d7'
+
+
+    const material = new MeshBasicMaterial({ transparent: true, opacity: 0.9, color: 0xD7D7D7 });
+    const mesh = new Mesh(model, material)
+      const modelScene = new Scene()
+    // scene.add(mesh)
+    // modelScene.add(model.load(unref(url)))
+    // scene.add(new AxesHelper(5))
+    scene.add(mesh)
+
+    console.log(modelScene)
+    box.setFromBufferAttribute(model.attributes.position)
+  } else {
+    // console.log(modelScene)
+    // modelScene.add(new AxesHelper(5))
+    box.setFromObject(modelScene)
+  }
+
   iniCamPosition = box.getCenter(new Vector3())
 
   // direct camera at model
@@ -213,9 +257,13 @@ async function renderModel() {
   camera.position.z = iniCamZPosition
   camera.lookAt(iniCamPosition)
 
-  // center model
-  modelScene.position.sub(iniCamPosition)
-  scene.add(modelScene)
+  if (extension === 'glb') {
+    // center model
+    modelScene.position.sub(iniCamPosition)
+    scene.add(modelScene)
+  } else {
+    // scene.add(modelScene)
+  }
 
   loadingModel.value = false
   currentModel.value = modelScene
@@ -240,7 +288,7 @@ async function renderNewModel() {
 
   loadingModel.value = true
   hasError.value = false
-  await renderModel()
+  await renderModel(unref(fileType))
 }
 function cleanup3dScene() {
   scene.traverse((obj) => {

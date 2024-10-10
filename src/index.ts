@@ -28,7 +28,11 @@ export default defineWebApplication({
           {
             extension: 'glb',
             label: 'View 3D Model'
-          }
+          },
+          {
+            extension: 'stl',
+            label: 'View STL 3D Model'
+          },
         ]
       },
       routes
