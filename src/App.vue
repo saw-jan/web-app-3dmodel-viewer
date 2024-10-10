@@ -52,6 +52,7 @@
 <script setup lang="ts">
 import { ref, unref, onMounted, onBeforeUnmount, computed } from 'vue'
 import {
+  AxesHelper,
   Scene,
   Mesh,
   PerspectiveCamera,
@@ -204,7 +205,6 @@ const LoaderMap = {
   stl: STLLoader,
 }
 
-
 async function renderModel(extension: string) {
   console.log('####################')
   console.log(extension)
@@ -212,40 +212,23 @@ async function renderModel(extension: string) {
 
   const ModelLoader = LoaderMap[extension];
 
-  // let ModelLoader = new GLTFLoader();
-  // if (extension === 'stl') {
-  //   ModelLoader = new STLLoader();
-  // }
-
   const model = await new ModelLoader().loadAsync(unref(url), (xhr) => {
     const downloaded = Math.floor((xhr.loaded / xhr.total) * 100)
     if (downloaded % 5 === 0) {
       loadingProgress.value = downloaded
     }
-  }
-  )
+  })
 
   const modelScene = model.scene
   const box = new Box3()
-  // console.log('####################')
   if (!model.hasOwnProperty('scene')) {
-    // model.options.opacity = 0.9
-    // model.color = '#d7d7d7'
-
-
+    scene.add(new AxesHelper(10))
     const material = new MeshBasicMaterial({ transparent: true, opacity: 0.9, color: 0xD7D7D7 });
     const mesh = new Mesh(model, material)
-      const modelScene = new Scene()
-    // scene.add(mesh)
-    // modelScene.add(model.load(unref(url)))
-    // scene.add(new AxesHelper(5))
+    const modelScene = new Scene()
     scene.add(mesh)
-
-    console.log(modelScene)
     box.setFromBufferAttribute(model.attributes.position)
   } else {
-    // console.log(modelScene)
-    // modelScene.add(new AxesHelper(5))
     box.setFromObject(modelScene)
   }
 
@@ -261,9 +244,8 @@ async function renderModel(extension: string) {
     // center model
     modelScene.position.sub(iniCamPosition)
     scene.add(modelScene)
-  } else {
-    // scene.add(modelScene)
   }
+  scene.add(new AxesHelper(10))
 
   loadingModel.value = false
   currentModel.value = modelScene
