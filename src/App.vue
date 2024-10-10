@@ -24,7 +24,7 @@
     </div>
     <PreviewControls
       class="oc-position-absolute oc-position-bottom-center"
-      :files="modelFiles"
+      :total-models="modelFiles.length"
       :active-index="activeIndex"
       :is-full-screen-mode-activated="isFullScreenModeActivated"
       @toggle-previous="prev"
@@ -122,7 +122,7 @@ const currentModel = ref()
 // =====================
 onMounted(async () => {
   await loadFolderForFileContext(unref(currentFileContext))
-  await setActiveModel(unref(currentFileContext).driveAliasAndItem)
+  await setActiveModel(unref(currentFileContext).driveAliasAndItem as string)
 
   if (unref(hasWebGLSupport)) {
     const { offsetWidth, offsetHeight } = unref(sceneWrapper)
