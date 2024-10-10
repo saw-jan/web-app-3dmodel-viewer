@@ -91,7 +91,7 @@ const scene: Scene = new Scene()
 let iniCamPosition: Vector3 | null = null
 let iniCamZPosition: number = 0
 const iniCamRotation: Euler = new Euler(0, 0, 0)
-const animTimeoutSec = 2
+const animTimeoutSec = 1
 
 // =====================
 // props
@@ -182,8 +182,6 @@ const modelFiles = computed<Resource[]>(() => {
   return sortHelper(files, [{ name: unref(sortBy) }], unref(sortBy), unref(sortDir))
 })
 const activeModelFile = computed(() => unref(modelFiles)[unref(activeIndex)])
-const pageTitle = computed(() => `Preview for ${unref(activeModelFile)?.name}`)
-const fileId = computed(() => unref(currentFileContext).itemId)
 
 // =====================
 // methods
@@ -229,11 +227,12 @@ async function renderModel() {
 }
 function render(animStartTime: number) {
   animationId.value = requestAnimationFrame(() => render(animStartTime))
-  const elapsedTime = (Date.now() - animStartTime) / 1000
-  if (elapsedTime < animTimeoutSec) {
-    camera.position.x -= iniCamZPosition * 0.01
-    camera.position.z -= iniCamZPosition * 0.01
-  }
+  // TODO: enable animation
+  // const elapsedTime = (Date.now() - animStartTime) / 1000
+  // if (elapsedTime < animTimeoutSec) {
+  //   camera.position.x -= iniCamZPosition * 0.01
+  //   camera.position.z -= iniCamZPosition * 0.01
+  // }
   controls.update()
   renderer.render(scene, camera)
 }
@@ -298,6 +297,9 @@ async function next() {
   }
 
   updateLocalHistory()
+  // TODO: how to prevent activeFiles from being reduced
+  // load activeFiles
+  await loadFolderForFileContext(unref(currentFileContext))
   await renderNewModel()
 }
 async function prev() {
@@ -311,6 +313,9 @@ async function prev() {
   }
 
   updateLocalHistory()
+  // TODO: how to prevent activeFiles from being reduced
+  // load activeFiles
+  await loadFolderForFileContext(unref(currentFileContext))
   await renderNewModel()
 }
 function toggleFullscreenMode() {
