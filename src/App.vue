@@ -1,52 +1,45 @@
 <template>
-  <AppBanner :file-id="fileId" />
-  <main id="preview" ref="preview" class="oc-width-1-1" tabindex="-1" @keydown.esc="closeApp">
-    <h1 class="oc-invisible-sr" v-text="pageTitle" />
-    <AppTopBar :resource="activeModelFile" @close="closeApp" />
-    <div class="oc-flex oc-width-1-1 oc-height-1-1">
-      <div
-        v-if="hasWebGLSupport"
-        id="scene-wrapper"
-        ref="sceneWrapper"
-        :class="isModelReady ? 'model-viewport' : ''"
-        @mousedown="changeCursor('grabbing')"
-        @mouseup="changeCursor('grab')"
-      >
-        <div v-if="hasError">
-          <NoContentMessage icon="file-warning">
-            <template #message>
-              <span>Something went wrong. Cannot render the model</span>
-            </template>
-          </NoContentMessage>
-        </div>
-        <div
-          v-else-if="!isModelReady"
-          id="spinner"
-          class="oc-flex oc-flex-column oc-flex-middle oc-flex-center oc-height-1-1 oc-width-1-1"
-        >
-          <AppLoadingSpinner />
-          <label class="oc-p-s">{{ loadingProgress }}%</label>
-        </div>
-        <PreviewControls
-          class="oc-position-absolute oc-position-bottom-center"
-          :files="modelFiles"
-          :active-index="activeIndex"
-          :is-full-screen-mode-activated="isFullScreenModeActivated"
-          @toggle-previous="prev"
-          @toggle-next="next"
-          @toggle-full-screen="toggleFullscreenMode"
-          @reset-position="resetModelPosition"
-        />
-      </div>
-      <div v-else>
-        <NoContentMessage icon="error-warning">
-          <template #message>
-            <span>This browser doesn't support WebGL</span>
-          </template>
-        </NoContentMessage>
-      </div>
+  <div
+    v-if="hasWebGLSupport"
+    id="scene-wrapper"
+    ref="sceneWrapper"
+    :class="isModelReady ? 'model-viewport' : ''"
+    @mousedown="changeCursor('grabbing')"
+    @mouseup="changeCursor('grab')"
+  >
+    <div v-if="hasError">
+      <NoContentMessage icon="file-warning">
+        <template #message>
+          <span>Something went wrong. Cannot render the model</span>
+        </template>
+      </NoContentMessage>
     </div>
-  </main>
+    <div
+      v-else-if="!isModelReady"
+      id="spinner"
+      class="oc-flex oc-flex-column oc-flex-middle oc-flex-center oc-height-1-1 oc-width-1-1"
+    >
+      <AppLoadingSpinner />
+      <label class="oc-p-s">{{ loadingProgress }}%</label>
+    </div>
+    <PreviewControls
+      class="oc-position-absolute oc-position-bottom-center"
+      :files="modelFiles"
+      :active-index="activeIndex"
+      :is-full-screen-mode-activated="isFullScreenModeActivated"
+      @toggle-previous="prev"
+      @toggle-next="next"
+      @toggle-full-screen="toggleFullscreenMode"
+      @reset-position="resetModelPosition"
+    />
+  </div>
+  <div v-else>
+    <NoContentMessage icon="error-warning">
+      <template #message>
+        <span>This browser doesn't support WebGL</span>
+      </template>
+    </NoContentMessage>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -75,12 +68,11 @@ import {
   useRoute,
   useRouter,
   useAppFileHandling,
-  useClientService,
-  AppBanner,
-  AppTopBar
+  useClientService
 } from '@ownclouders/web-pkg'
 import { Resource } from '@ownclouders/web-client/src'
 import PreviewControls from './components/PreviewControls.vue'
+import { id as appId } from '../public/manifest.json'
 
 const environment = new URL('./assets/custom_light.jpg', import.meta.url).href
 const supportExtensions = ['glb']
@@ -89,8 +81,8 @@ const router = useRouter()
 const route = useRoute()
 const contextRouteQuery = useRouteQuery('contextRouteQuery')
 const { getUrlForResource } = useAppFileHandling({ clientService: useClientService() })
-const { activeFiles, currentFileContext, closeApp, loadFolderForFileContext } = useAppDefaults({
-  applicationId: '3dmodel-viewer'
+const { activeFiles, currentFileContext, loadFolderForFileContext } = useAppDefaults({
+  applicationId: appId
 })
 
 // 3d canvas
@@ -99,7 +91,17 @@ const scene: Scene = new Scene()
 let iniCamPosition: Vector3 | null = null
 let iniCamZPosition: number = 0
 const iniCamRotation: Euler = new Euler(0, 0, 0)
-const animTimeoutSec = 2
+const animTimeoutSec = 1
+
+// =====================
+// props
+// =====================
+defineProps({
+  url: {
+    type: String,
+    required: true
+  }
+})
 
 // =====================
 // states
@@ -112,7 +114,7 @@ const loadingProgress = ref<number>(0)
 const isFullScreenModeActivated = ref<boolean>(false)
 const activeIndex = ref<number>(0)
 const animationId = ref<number | undefined>()
-const url = ref<string>()
+const currentUrl = ref<string>()
 const currentModel = ref()
 
 // =====================
@@ -180,14 +182,15 @@ const modelFiles = computed<Resource[]>(() => {
   return sortHelper(files, [{ name: unref(sortBy) }], unref(sortBy), unref(sortDir))
 })
 const activeModelFile = computed(() => unref(modelFiles)[unref(activeIndex)])
-const pageTitle = computed(() => `Preview for ${unref(activeModelFile)?.name}`)
-const fileId = computed(() => unref(currentFileContext).itemId)
 
 // =====================
 // methods
 // =====================
 async function updateUrl() {
-  url.value = await getUrlForResource(unref(currentFileContext).space, unref(activeModelFile))
+  currentUrl.value = await getUrlForResource(
+    unref(currentFileContext).space,
+    unref(activeModelFile)
+  )
 }
 async function loadEnvironment() {
   const texture = await new TextureLoader().loadAsync(environment)
@@ -195,7 +198,7 @@ async function loadEnvironment() {
   scene.environment = texture
 }
 async function renderModel() {
-  const model = await new GLTFLoader().loadAsync(unref(url), (xhr) => {
+  const model = await new GLTFLoader().loadAsync(unref(currentUrl), (xhr) => {
     const downloaded = Math.floor((xhr.loaded / xhr.total) * 100)
     if (downloaded % 5 === 0) {
       loadingProgress.value = downloaded
@@ -224,11 +227,12 @@ async function renderModel() {
 }
 function render(animStartTime: number) {
   animationId.value = requestAnimationFrame(() => render(animStartTime))
-  const elapsedTime = (Date.now() - animStartTime) / 1000
-  if (elapsedTime < animTimeoutSec) {
-    camera.position.x -= iniCamZPosition * 0.01
-    camera.position.z -= iniCamZPosition * 0.01
-  }
+  // TODO: enable animation
+  // const elapsedTime = (Date.now() - animStartTime) / 1000
+  // if (elapsedTime < animTimeoutSec) {
+  //   camera.position.x -= iniCamZPosition * 0.01
+  //   camera.position.z -= iniCamZPosition * 0.01
+  // }
   controls.update()
   renderer.render(scene, camera)
 }
@@ -293,6 +297,9 @@ async function next() {
   }
 
   updateLocalHistory()
+  // TODO: how to prevent activeFiles from being reduced
+  // load activeFiles
+  await loadFolderForFileContext(unref(currentFileContext))
   await renderNewModel()
 }
 async function prev() {
@@ -306,6 +313,9 @@ async function prev() {
   }
 
   updateLocalHistory()
+  // TODO: how to prevent activeFiles from being reduced
+  // load activeFiles
+  await loadFolderForFileContext(unref(currentFileContext))
   await renderNewModel()
 }
 function toggleFullscreenMode() {

@@ -1,3 +1,5 @@
 {
-	"entrypoint": "extension.js"
+  "id": "com.github.sawjan.3dviewer",
+  "entrypoint": "extension.js",
+  "config": {}
 }

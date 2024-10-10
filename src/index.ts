@@ -1,7 +1,6 @@
-import { defineWebApplication } from '@ownclouders/web-pkg'
+import { AppWrapperRoute, defineWebApplication } from '@ownclouders/web-pkg'
 import App from './App.vue'
-
-const appId = '3dmodel-viewer'
+import { id as appId } from '../public/manifest.json'
 
 export default defineWebApplication({
   setup() {
@@ -9,9 +8,15 @@ export default defineWebApplication({
       {
         name: appId,
         path: '/:driveAliasAndItem(.*)?',
-        component: App,
+        component: AppWrapperRoute(App, {
+          applicationId: appId,
+          urlForResourceOptions: {
+            disposition: 'inline'
+          }
+        }),
         meta: {
           authContext: 'hybrid',
+          title: '3D Model Viewer',
           patchCleanPath: true
         }
       }
