@@ -1,6 +1,6 @@
 {
   "name": "web-app-3dmodel-viewer",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "3D model viewer extension for ownCloud Web",
   "type": "module",
   "author": "Sajan Gurung <saw.jan.grg3e@gmail.com> (https://sajang.com.np)",
