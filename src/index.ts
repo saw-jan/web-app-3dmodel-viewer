@@ -42,6 +42,10 @@ export default defineWebApplication({
             extension: 'fbx',
             label: 'View FBX 3D Model'
           },
+          {
+            extension: 'obj',
+            label: 'View OBJ 3D Model'
+          },
         ]
       },
       routes

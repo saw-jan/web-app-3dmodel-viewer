@@ -19,7 +19,7 @@
       id="spinner"
       class="oc-flex oc-flex-column oc-flex-middle oc-flex-center oc-height-1-1 oc-width-1-1"
     >
-      <AppLoadingSpinner />
+      <AppLoadingSpinner/>
       <label class="oc-p-s">{{ loadingProgress }}%</label>
     </div>
     <PreviewControls
@@ -43,24 +43,28 @@
 </template>
 
 <script setup lang="ts">
-import { ref, unref, onMounted, onBeforeUnmount, computed } from 'vue'
+import {ref, unref, onMounted, onBeforeUnmount, computed} from 'vue'
 import {
+  AmbientLight,
   AxesHelper,
   Scene,
   Mesh,
   PerspectiveCamera,
+  PointLight,
   WebGLRenderer,
   ACESFilmicToneMapping,
   EquirectangularReflectionMapping,
   Box3,
   Vector3,
   Euler,
-  TextureLoader, Cache, MeshBasicMaterial
+  TextureLoader, MeshPhongMaterial
 } from 'three'
 import WebGL from 'three/examples/jsm/capabilities/WebGL'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
-import { STLLoader } from 'three/examples/jsm/loaders/STLLoader'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader'
+import {STLLoader} from 'three/examples/jsm/loaders/STLLoader'
+import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
+import {OBJLoader} from "three/examples/jsm/loaders/OBJLoader";
+import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls'
 import {
   AppLoadingSpinner,
   NoContentMessage,
@@ -73,19 +77,18 @@ import {
   useAppFileHandling,
   useClientService
 } from '@ownclouders/web-pkg'
-import { Resource } from '@ownclouders/web-client/src'
+import {Resource} from '@ownclouders/web-client/src'
 import PreviewControls from './components/PreviewControls.vue'
-import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
-import { id as appId } from '../public/manifest.json'
+import {id as appId} from '../public/manifest.json'
 
 const environment = new URL('./assets/custom_light.jpg', import.meta.url).href
-const supportExtensions = ['glb','stl','fbx']
+const supportExtensions = ['glb', 'stl', 'fbx', 'obj']
 
 const router = useRouter()
 const route = useRoute()
 const contextRouteQuery = useRouteQuery('contextRouteQuery')
-const { getUrlForResource } = useAppFileHandling({ clientService: useClientService() })
-const { activeFiles, currentFileContext, loadFolderForFileContext } = useAppDefaults({
+const {getUrlForResource} = useAppFileHandling({clientService: useClientService()})
+const {activeFiles, currentFileContext, loadFolderForFileContext} = useAppDefaults({
   applicationId: appId
 })
 
@@ -130,12 +133,12 @@ onMounted(async () => {
   await setActiveModel(unref(currentFileContext).driveAliasAndItem as string)
 
   if (unref(hasWebGLSupport)) {
-    const { offsetWidth, offsetHeight } = unref(sceneWrapper)
+    const {offsetWidth, offsetHeight} = unref(sceneWrapper)
 
     camera = new PerspectiveCamera(50, offsetWidth / offsetHeight, 0.1, 1000)
     camera.rotation.copy(iniCamRotation)
 
-    renderer = new WebGLRenderer({ alpha: true, antialias: true })
+    renderer = new WebGLRenderer({alpha: true, antialias: true})
     renderer.setSize(offsetWidth, offsetHeight)
     renderer.toneMapping = ACESFilmicToneMapping
     renderer.toneMappingExposure = 1.2
@@ -149,6 +152,7 @@ onMounted(async () => {
     try {
       await loadEnvironment()
       await renderModel(unref(fileType))
+      loadLights()
     } catch (e) {
       cleanup3dScene()
       hasError.value = true
@@ -184,7 +188,7 @@ const modelFiles = computed<Resource[]>(() => {
     return supportExtensions.includes(file.extension?.toLowerCase())
   })
 
-  return sortHelper(files, [{ name: unref(sortBy) }], unref(sortBy), unref(sortDir))
+  return sortHelper(files, [{name: unref(sortBy)}], unref(sortBy), unref(sortDir))
 })
 const activeModelFile = computed(() => unref(modelFiles)[unref(activeIndex)])
 const pageTitle = computed(() => `Preview for ${unref(activeModelFile)?.name}`)
@@ -200,6 +204,7 @@ async function updateUrl() {
     unref(activeModelFile)
   )
 }
+
 async function loadEnvironment() {
   const texture = await new TextureLoader().loadAsync(environment)
   texture.mapping = EquirectangularReflectionMapping
@@ -210,6 +215,23 @@ const LoaderMap = {
   glb: GLTFLoader,
   stl: STLLoader,
   fbx: FBXLoader,
+  obj: OBJLoader,
+}
+
+const materialParams = {
+  transparent: true,
+  opacity: 0.8,
+  color: 0xD7D7D7,
+  flatShading: true
+}
+
+const lightParams = {
+  color: 0xffffff,
+  intensity: 1000,
+  posX: 2.5,
+  posY: 15,
+  posZ: 25,
+  ambient: true,
 }
 
 async function renderModel(extension: string) {
@@ -222,23 +244,18 @@ async function renderModel(extension: string) {
     }
   })
 
+  debug(model)
+
   const box = new Box3()
   if (!model.hasOwnProperty('scene') && extension === 'stl') {
-
-    const material = new MeshBasicMaterial({ transparent: true, opacity: 0.9, color: 0xD7D7D7 });
-    const mesh = new Mesh(model, material)
-
+    const mesh = new Mesh(model, defaultMaterial())
     scene.add(mesh)
     box.setFromBufferAttribute(model.attributes.position)
-
-  } else if (!model.hasOwnProperty('scene') && extension === 'fbx') {
+  } else if (!model.hasOwnProperty('scene') && (extension === 'fbx' || extension === 'obj')) {
     box.setFromObject(model)
-
-    debug(model)
-
-    model.traverse( function ( child ) {
-      if ( child.isMesh ) {
-        child.material = new MeshBasicMaterial({ transparent: true, opacity: 0.9, color: 0xD7D7D7 });
+    model.traverse(function (child) {
+      if (child.isMesh) {
+        child.material = defaultMaterial()
       }
     })
     scene.add(model)
@@ -268,6 +285,22 @@ async function renderModel(extension: string) {
   unref(sceneWrapper).appendChild(renderer.domElement)
   render(Date.now())
 }
+
+function loadLights(): void {
+  const light = new PointLight(lightParams.color, lightParams.intensity)
+  light.position.set(lightParams.posX, lightParams.posY, lightParams.posZ)
+  scene.add(light)
+
+  if (lightParams.ambient) {
+    const ambientLight = new AmbientLight()
+    scene.add(ambientLight)
+  }
+}
+
+function defaultMaterial(): MeshPhongMaterial {
+  return new MeshPhongMaterial(materialParams)
+}
+
 function render(animStartTime: number) {
   animationId.value = requestAnimationFrame(() => render(animStartTime))
   // TODO: enable animation
@@ -279,6 +312,7 @@ function render(animStartTime: number) {
   controls.update()
   renderer.render(scene, camera)
 }
+
 async function renderNewModel() {
   cancelAnimationFrame(unref(animationId))
   scene.remove(scene.getObjectByName(unref(currentModel).name))
@@ -289,19 +323,19 @@ async function renderNewModel() {
   hasError.value = false
   await renderModel(unref(fileType))
 }
+
 function cleanup3dScene() {
-  scene.traverse((obj) => {
-    scene.remove(obj)
-  })
   cancelAnimationFrame(unref(animationId))
   renderer.dispose()
 }
+
 function changeCursor(state: string) {
   const el = unref(sceneWrapper)
   if (el.classList.contains('model-viewport')) {
     el.style.cursor = state
   }
 }
+
 async function setActiveModel(driveAliasAndItem: string) {
   for (let i = 0; i < unref(modelFiles).length; i++) {
     if (
@@ -314,25 +348,28 @@ async function setActiveModel(driveAliasAndItem: string) {
     }
   }
 }
+
 function updateLocalHistory() {
   if (!unref(currentFileContext)) {
     return
   }
 
-  const { params, query } = createFileRouteOptions(
+  const {params, query} = createFileRouteOptions(
     unref(currentFileContext).space,
     unref(activeModelFile)
   )
   router.replace({
     ...unref(route),
-    params: { ...unref(route).params, ...params },
-    query: { ...unref(route).query, ...query }
+    params: {...unref(route).params, ...params},
+    query: {...unref(route).query, ...query}
   })
 }
+
 async function next() {
   if (!unref(isModelReady)) {
     return
   }
+
   if (unref(activeIndex) + 1 >= unref(modelFiles).length) {
     activeIndex.value = 0
   } else {
@@ -340,15 +377,18 @@ async function next() {
   }
 
   updateLocalHistory()
+  await unloadModels()
   // TODO: how to prevent activeFiles from being reduced
   // load activeFiles
   await loadFolderForFileContext(unref(currentFileContext))
   await renderNewModel()
 }
+
 async function prev() {
   if (!unref(isModelReady)) {
     return
   }
+
   if (unref(activeIndex) === 0) {
     activeIndex.value = unref(modelFiles).length - 1
   } else {
@@ -356,11 +396,22 @@ async function prev() {
   }
 
   updateLocalHistory()
+  await unloadModels()
   // TODO: how to prevent activeFiles from being reduced
   // load activeFiles
   await loadFolderForFileContext(unref(currentFileContext))
   await renderNewModel()
 }
+
+async function unloadModels(): Promise<void> {
+  for (let i = scene.children.length - 1; i >= 0; i--) {
+    let obj = scene.children[i]
+    if (unref(obj.type) === 'Group' || unref(obj.type) === 'Mesh') {
+      scene.remove(obj)
+    }
+  }
+}
+
 function toggleFullscreenMode() {
   const activateFullscreen = !unref(isFullScreenModeActivated)
   const el = unref(sceneWrapper)
@@ -375,6 +426,7 @@ function toggleFullscreenMode() {
     }
   }
 }
+
 function resetModelPosition() {
   if (unref(isModelReady)) {
     camera.position.copy(iniCamPosition)
@@ -383,6 +435,7 @@ function resetModelPosition() {
     camera.lookAt(iniCamPosition)
   }
 }
+
 function debug(output) {
   if (debugIsEnabled) {
     scene.add(new AxesHelper(10))
@@ -403,6 +456,7 @@ function debug(output) {
     cursor: grab;
   }
 }
+
 #spinner {
   & > div {
     width: unset;
