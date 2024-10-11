@@ -45,7 +45,7 @@ export default defineWebApplication({
           {
             extension: 'obj',
             label: 'View OBJ 3D Model'
-          },
+          }
         ]
       },
       routes

@@ -19,7 +19,7 @@
       id="spinner"
       class="oc-flex oc-flex-column oc-flex-middle oc-flex-center oc-height-1-1 oc-width-1-1"
     >
-      <AppLoadingSpinner/>
+      <AppLoadingSpinner />
       <label class="oc-p-s">{{ loadingProgress }}%</label>
     </div>
     <PreviewControls
@@ -43,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref, unref, onMounted, onBeforeUnmount, computed} from 'vue'
+import { ref, unref, onMounted, onBeforeUnmount, computed } from 'vue'
 import {
   AmbientLight,
   AxesHelper,
@@ -57,14 +57,15 @@ import {
   Box3,
   Vector3,
   Euler,
-  TextureLoader, MeshPhongMaterial
+  TextureLoader,
+  MeshPhongMaterial
 } from 'three'
 import WebGL from 'three/examples/jsm/capabilities/WebGL'
-import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader'
-import {STLLoader} from 'three/examples/jsm/loaders/STLLoader'
-import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
-import {OBJLoader} from "three/examples/jsm/loaders/OBJLoader";
-import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+import { STLLoader } from 'three/examples/jsm/loaders/STLLoader'
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import {
   AppLoadingSpinner,
   NoContentMessage,
@@ -77,9 +78,9 @@ import {
   useAppFileHandling,
   useClientService
 } from '@ownclouders/web-pkg'
-import {Resource} from '@ownclouders/web-client/src'
+import { Resource } from '@ownclouders/web-client/src'
 import PreviewControls from './components/PreviewControls.vue'
-import {id as appId} from '../public/manifest.json'
+import { id as appId } from '../public/manifest.json'
 
 const environment = new URL('./assets/custom_light.jpg', import.meta.url).href
 const supportExtensions = ['glb', 'stl', 'fbx', 'obj']
@@ -87,8 +88,8 @@ const supportExtensions = ['glb', 'stl', 'fbx', 'obj']
 const router = useRouter()
 const route = useRoute()
 const contextRouteQuery = useRouteQuery('contextRouteQuery')
-const {getUrlForResource} = useAppFileHandling({clientService: useClientService()})
-const {activeFiles, currentFileContext, loadFolderForFileContext} = useAppDefaults({
+const { getUrlForResource } = useAppFileHandling({ clientService: useClientService() })
+const { activeFiles, currentFileContext, loadFolderForFileContext } = useAppDefaults({
   applicationId: appId
 })
 
@@ -133,12 +134,12 @@ onMounted(async () => {
   await setActiveModel(unref(currentFileContext).driveAliasAndItem as string)
 
   if (unref(hasWebGLSupport)) {
-    const {offsetWidth, offsetHeight} = unref(sceneWrapper)
+    const { offsetWidth, offsetHeight } = unref(sceneWrapper)
 
     camera = new PerspectiveCamera(50, offsetWidth / offsetHeight, 0.1, 1000)
     camera.rotation.copy(iniCamRotation)
 
-    renderer = new WebGLRenderer({alpha: true, antialias: true})
+    renderer = new WebGLRenderer({ alpha: true, antialias: true })
     renderer.setSize(offsetWidth, offsetHeight)
     renderer.toneMapping = ACESFilmicToneMapping
     renderer.toneMappingExposure = 1.2
@@ -188,7 +189,7 @@ const modelFiles = computed<Resource[]>(() => {
     return supportExtensions.includes(file.extension?.toLowerCase())
   })
 
-  return sortHelper(files, [{name: unref(sortBy)}], unref(sortBy), unref(sortDir))
+  return sortHelper(files, [{ name: unref(sortBy) }], unref(sortBy), unref(sortDir))
 })
 const activeModelFile = computed(() => unref(modelFiles)[unref(activeIndex)])
 const pageTitle = computed(() => `Preview for ${unref(activeModelFile)?.name}`)
@@ -215,13 +216,13 @@ const LoaderMap = {
   glb: GLTFLoader,
   stl: STLLoader,
   fbx: FBXLoader,
-  obj: OBJLoader,
+  obj: OBJLoader
 }
 
 const materialParams = {
   transparent: true,
   opacity: 0.8,
-  color: 0xD7D7D7,
+  color: 0xd7d7d7,
   flatShading: true
 }
 
@@ -231,11 +232,11 @@ const lightParams = {
   posX: 2.5,
   posY: 15,
   posZ: 25,
-  ambient: true,
+  ambient: true
 }
 
 async function renderModel(extension: string) {
-  const ModelLoader = LoaderMap[extension];
+  const ModelLoader = LoaderMap[extension]
 
   const model = await new ModelLoader().loadAsync(unref(currentUrl), (xhr) => {
     const downloaded = Math.floor((xhr.loaded / xhr.total) * 100)
@@ -354,14 +355,14 @@ function updateLocalHistory() {
     return
   }
 
-  const {params, query} = createFileRouteOptions(
+  const { params, query } = createFileRouteOptions(
     unref(currentFileContext).space,
     unref(activeModelFile)
   )
   router.replace({
     ...unref(route),
-    params: {...unref(route).params, ...params},
-    query: {...unref(route).query, ...query}
+    params: { ...unref(route).params, ...params },
+    query: { ...unref(route).query, ...query }
   })
 }
 
