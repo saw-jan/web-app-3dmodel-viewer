@@ -63,8 +63,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { computed, PropType } from 'vue'
-import { Resource } from '@ownclouders/web-client/src'
+import { computed } from 'vue'
 
 const toolTip = {
   enterFullScreenDescription: 'Enter full screen mode',
@@ -78,8 +77,8 @@ const toolTip = {
 // props
 // =====================
 const props = defineProps({
-  files: {
-    type: Array as PropType<Resource[]>,
+  totalModels: {
+    type: Number,
     required: true
   },
   activeIndex: {
@@ -101,10 +100,10 @@ defineEmits(['toggleFullScreen', 'toggleNext', 'togglePrevious', 'resetPosition'
 // computed properties
 // =====================
 const ariaHiddenFileCount = computed(() => {
-  return `${(props.activeIndex + 1).toString()} of ${props.files.length.toString()}`
+  return `${(props.activeIndex + 1).toString()} of ${props.totalModels.toString()}`
 })
 const screenreaderFileCount = computed(() => {
-  return `3D model file ${(props.activeIndex + 1).toString()} of ${props.files.length.toString()}`
+  return `3D model file ${(props.activeIndex + 1).toString()} of ${props.totalModels.toString()}`
 })
 </script>
 

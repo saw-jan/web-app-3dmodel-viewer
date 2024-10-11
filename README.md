@@ -43,16 +43,6 @@ For building and running the app from the code base, follow these steps:
 
 Now, you can access the app at https://localhost:9200
 
-## Docker Image
-
-This extension is available as docker image: [sawjan/web-app-3dmodel-viewer](https://hub.docker.com/r/sawjan/web-app-3dmodel-viewer/tags)
-
-Run the extension container with:
-
-```bash
-docker run --rm -p3000:80 sawjan/web-app-3dmodel-viewer
-```
-
 ## 3D models
 
 You can find models on the following platforms:

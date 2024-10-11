@@ -1,0 +1,40 @@
+name: build-lint
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  workflow_call:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: pnpm-install
+        uses: pnpm/action-setup@v3
+        with:
+          run_install: |
+            - args: [--frozen-lockfile, --strict-peer-dependencies]
+
+      - name: lint
+        run: pnpm lint
+        if: github.event_name != 'release'
+
+      - name: build
+        run: pnpm build
+
+      - name: upload-dist
+        uses: actions/upload-artifact@v4
+        if: github.event_name == 'release'
+        with:
+          name: dist
+          path: dist/
+          retention-days: 1

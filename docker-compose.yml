@@ -1,6 +1,6 @@
 services:
   ocis:
-    image: owncloud/ocis:latest
+    image: owncloud/ocis-rolling:latest
     container_name: web
     entrypoint: /bin/sh
     command: ['-c', 'ocis init || true && ocis server']
@@ -12,15 +12,6 @@ services:
       OCIS_LOG_LEVEL: error
       IDM_ADMIN_PASSWORD: admin
       PROXY_ENABLE_BASIC_AUTH: true
-      WEB_UI_CONFIG_FILE: /etc/ocis/web.json
+      WEB_ASSET_APPS_PATH: /etc/ocis/webapps
     volumes:
-      - ./dev/web.json:/etc/ocis/web.json:ro
-
-  extension:
-    image: nginx:1.25.3
-    container_name: 3d_viewer
-    ports:
-      - 3000:80
-    volumes:
-      - ./dev/nginx.conf:/etc/nginx/conf.d/default.conf:ro
-      - ./dist:/usr/share/nginx/html:ro
+      - ./dist:/etc/ocis/webapps:ro
