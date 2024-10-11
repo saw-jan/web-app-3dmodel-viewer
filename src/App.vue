@@ -85,9 +85,10 @@ import {
 import { Resource } from '@ownclouders/web-client/src'
 import PreviewControls from './components/PreviewControls.vue'
 import files = Cache.files;
+import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
 
 const environment = new URL('./assets/custom_light.jpg', import.meta.url).href
-const supportExtensions = ['glb','stl']
+const supportExtensions = ['glb','stl','fbx']
 
 const router = useRouter()
 const route = useRoute()
@@ -104,6 +105,7 @@ let iniCamPosition: Vector3 | null = null
 let iniCamZPosition: number = 0
 const iniCamRotation: Euler = new Euler(0, 0, 0)
 const animTimeoutSec = 2
+const debugIsEnabled = false
 
 // =====================
 // states
@@ -203,13 +205,10 @@ async function loadEnvironment() {
 const LoaderMap = {
   glb: GLTFLoader,
   stl: STLLoader,
+  fbx: FBXLoader,
 }
 
 async function renderModel(extension: string) {
-  console.log('####################')
-  console.log(extension)
-  console.log('####################')
-
   const ModelLoader = LoaderMap[extension];
 
   const model = await new ModelLoader().loadAsync(unref(url), (xhr) => {
@@ -219,17 +218,28 @@ async function renderModel(extension: string) {
     }
   })
 
-  const modelScene = model.scene
   const box = new Box3()
-  if (!model.hasOwnProperty('scene')) {
-    scene.add(new AxesHelper(10))
+  if (!model.hasOwnProperty('scene') && extension === 'stl') {
+
     const material = new MeshBasicMaterial({ transparent: true, opacity: 0.9, color: 0xD7D7D7 });
     const mesh = new Mesh(model, material)
-    const modelScene = new Scene()
+
     scene.add(mesh)
     box.setFromBufferAttribute(model.attributes.position)
+
+  } else if (!model.hasOwnProperty('scene') && extension === 'fbx') {
+    box.setFromObject(model)
+
+    debug(model)
+
+    model.traverse( function ( child ) {
+      if ( child.isMesh ) {
+        child.material = new MeshBasicMaterial({ transparent: true, opacity: 0.9, color: 0xD7D7D7 });
+      }
+    })
+    scene.add(model)
   } else {
-    box.setFromObject(modelScene)
+    box.setFromObject(model.scene)
   }
 
   iniCamPosition = box.getCenter(new Vector3())
@@ -240,15 +250,17 @@ async function renderModel(extension: string) {
   camera.position.z = iniCamZPosition
   camera.lookAt(iniCamPosition)
 
+  loadingModel.value = false
   if (extension === 'glb') {
+    const modelScene = model.scene
     // center model
     modelScene.position.sub(iniCamPosition)
     scene.add(modelScene)
+    currentModel.value = modelScene
+  } else {
+    currentModel.value = scene
   }
-  scene.add(new AxesHelper(10))
 
-  loadingModel.value = false
-  currentModel.value = modelScene
   unref(sceneWrapper).appendChild(renderer.domElement)
   render(Date.now())
 }
@@ -358,6 +370,14 @@ function resetModelPosition() {
     camera.position.z = iniCamZPosition
     camera.rotation.copy(iniCamRotation)
     camera.lookAt(iniCamPosition)
+  }
+}
+function debug(output) {
+  if (debugIsEnabled) {
+    scene.add(new AxesHelper(10))
+    console.log('####### DEBUG #######')
+    console.log(output)
+    console.log('#####################')
   }
 }
 </script>

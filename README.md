@@ -6,7 +6,7 @@ This is an extension for [ownCloud web](https://github.com/owncloud/web) for vie
 
 ## Feature Highlights ✨
 
-- Supported formats: [`.glb`, `.stl`]
+- Supported formats: [`.glb`, `.stl`, `.fbx`]
 - Zoom/Rotate model
 - Fullscreen view
 - Navigate between model files
