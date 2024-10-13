@@ -438,7 +438,7 @@ function resetModelPosition() {
 function debug(output) {
   if (debugIsEnabled) {
     scene.add(new AxesHelper(10))
-    console.log('####### DEBUG #######')
+    console.log('####### DEBUG 3D MODEL #######')
     console.log(output)
     console.log('#####################')
   }
