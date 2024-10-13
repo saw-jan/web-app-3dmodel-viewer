@@ -36,15 +36,15 @@ export default defineWebApplication({
           },
           {
             extension: 'stl',
-            label: 'View STL 3D Model'
+            label: 'View 3D Model'
           },
           {
             extension: 'fbx',
-            label: 'View FBX 3D Model'
+            label: 'View 3D Model'
           },
           {
             extension: 'obj',
-            label: 'View OBJ 3D Model'
+            label: 'View 3D Model'
           }
         ]
       },
