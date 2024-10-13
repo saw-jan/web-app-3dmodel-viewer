@@ -192,8 +192,6 @@ const modelFiles = computed<Resource[]>(() => {
   return sortHelper(files, [{ name: unref(sortBy) }], unref(sortBy), unref(sortDir))
 })
 const activeModelFile = computed(() => unref(modelFiles)[unref(activeIndex)])
-const pageTitle = computed(() => `Preview for ${unref(activeModelFile)?.name}`)
-const fileId = computed(() => unref(currentFileContext).itemId)
 const fileType = computed(() => unref(activeModelFile)?.extension)
 
 // =====================
