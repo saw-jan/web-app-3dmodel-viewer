@@ -314,7 +314,6 @@ function render(animStartTime: number) {
 
 async function renderNewModel() {
   cancelAnimationFrame(unref(animationId))
-  scene.remove(scene.getObjectByName(unref(currentModel).name))
 
   await updateUrl()
 
