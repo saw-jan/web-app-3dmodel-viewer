@@ -14,7 +14,12 @@ This is an extension for [ownCloud web](https://github.com/owncloud/web) for vie
 
 ## [Demonstration](https://ocis.in-nepal.de/s/dSlOHjJcQSYuPxV)
 
-## Build and Run
+## Installation
+
+1. Download the zip file from the [releases page](https://github.com/saw-jan/web-app-3dmodel-viewer/releases)  
+2. Extract the zip file to the apps directory of the oCIS server, [which is set using the `WEB_ASSET_APPS_PATH` environment variable](https://doc.owncloud.com/ocis/next/deployment/webui/webui-customisation.html#extend-web-ui-with-apps)
+
+## Build and Run for development
 
 For building and running the app from the code base, follow these steps: 
 
