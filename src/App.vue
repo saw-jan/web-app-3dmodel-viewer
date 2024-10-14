@@ -80,10 +80,10 @@ import {
 } from '@ownclouders/web-pkg'
 import { Resource } from '@ownclouders/web-client/src'
 import PreviewControls from './components/PreviewControls.vue'
+import { supportedExtensions, supportedMimeTypes } from './mimeTypes'
 import { id as appId } from '../public/manifest.json'
 
 const environment = new URL('./assets/custom_light.jpg', import.meta.url).href
-const supportExtensions = ['glb', 'stl', 'fbx', 'obj']
 
 const router = useRouter()
 const route = useRoute()
@@ -186,7 +186,10 @@ const modelFiles = computed<Resource[]>(() => {
   }
 
   const files = unref(activeFiles).filter((file: Resource) => {
-    return supportExtensions.includes(file.extension?.toLowerCase())
+    return (
+      supportedExtensions.includes(file.extension?.toLowerCase()) &&
+      supportedMimeTypes.includes(file.mimeType?.toLowerCase())
+    )
   })
 
   return sortHelper(files, [{ name: unref(sortBy) }], unref(sortBy), unref(sortDir))
