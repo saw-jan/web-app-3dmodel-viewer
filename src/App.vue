@@ -45,18 +45,26 @@
 <script setup lang="ts">
 import { ref, unref, onMounted, onBeforeUnmount, computed } from 'vue'
 import {
+  AmbientLight,
+  AxesHelper,
   Scene,
+  Mesh,
   PerspectiveCamera,
+  PointLight,
   WebGLRenderer,
   ACESFilmicToneMapping,
   EquirectangularReflectionMapping,
   Box3,
   Vector3,
   Euler,
-  TextureLoader
+  TextureLoader,
+  MeshPhongMaterial
 } from 'three'
 import WebGL from 'three/examples/jsm/capabilities/WebGL'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+import { STLLoader } from 'three/examples/jsm/loaders/STLLoader'
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import {
   AppLoadingSpinner,
@@ -75,7 +83,7 @@ import PreviewControls from './components/PreviewControls.vue'
 import { id as appId } from '../public/manifest.json'
 
 const environment = new URL('./assets/custom_light.jpg', import.meta.url).href
-const supportExtensions = ['glb']
+const supportExtensions = ['glb', 'stl', 'fbx', 'obj']
 
 const router = useRouter()
 const route = useRoute()
@@ -92,6 +100,7 @@ let iniCamPosition: Vector3 | null = null
 let iniCamZPosition: number = 0
 const iniCamRotation: Euler = new Euler(0, 0, 0)
 const animTimeoutSec = 1
+const debugIsEnabled = false
 
 // =====================
 // props
@@ -137,13 +146,14 @@ onMounted(async () => {
 
     // camera controls
     controls = new OrbitControls(camera, renderer.domElement)
-    controls.minDistance = 1
+    controls.minDistance = 0
     controls.maxDistance = 100
 
     // load environment texture
     try {
       await loadEnvironment()
-      await renderModel()
+      await renderModel(unref(fileType))
+      loadLights()
     } catch (e) {
       cleanup3dScene()
       hasError.value = true
@@ -182,6 +192,7 @@ const modelFiles = computed<Resource[]>(() => {
   return sortHelper(files, [{ name: unref(sortBy) }], unref(sortBy), unref(sortDir))
 })
 const activeModelFile = computed(() => unref(modelFiles)[unref(activeIndex)])
+const fileType = computed(() => unref(activeModelFile)?.extension)
 
 // =====================
 // methods
@@ -192,22 +203,65 @@ async function updateUrl() {
     unref(activeModelFile)
   )
 }
+
 async function loadEnvironment() {
   const texture = await new TextureLoader().loadAsync(environment)
   texture.mapping = EquirectangularReflectionMapping
   scene.environment = texture
 }
-async function renderModel() {
-  const model = await new GLTFLoader().loadAsync(unref(currentUrl), (xhr) => {
+
+const LoaderMap = {
+  glb: GLTFLoader,
+  stl: STLLoader,
+  fbx: FBXLoader,
+  obj: OBJLoader
+}
+
+const materialParams = {
+  transparent: true,
+  opacity: 0.8,
+  color: 0xd7d7d7,
+  flatShading: true
+}
+
+const lightParams = {
+  color: 0xffffff,
+  intensity: 1000,
+  posX: 2.5,
+  posY: 15,
+  posZ: 25,
+  ambient: true
+}
+
+async function renderModel(extension: string) {
+  const ModelLoader = LoaderMap[extension]
+
+  const model = await new ModelLoader().loadAsync(unref(currentUrl), (xhr) => {
     const downloaded = Math.floor((xhr.loaded / xhr.total) * 100)
     if (downloaded % 5 === 0) {
       loadingProgress.value = downloaded
     }
   })
 
-  const modelScene = model.scene
-  // model size
-  const box = new Box3().setFromObject(modelScene)
+  debug(model)
+
+  const box = new Box3()
+  if (!model.hasOwnProperty('scene') && extension === 'stl') {
+    const mesh = new Mesh(model, defaultMaterial())
+    scene.add(mesh)
+    box.setFromBufferAttribute(model.attributes.position)
+  } else if (!model.hasOwnProperty('scene') && (extension === 'fbx' || extension === 'obj')) {
+    box.setFromObject(model)
+    model.traverse(function (child) {
+      if (child.isMesh) {
+        child.material = defaultMaterial()
+      }
+    })
+    scene.add(model)
+  } else {
+    box.setFromObject(model.scene)
+  }
+
   iniCamPosition = box.getCenter(new Vector3())
 
   // direct camera at model
@@ -216,15 +270,36 @@ async function renderModel() {
   camera.position.z = iniCamZPosition
   camera.lookAt(iniCamPosition)
 
-  // center model
-  modelScene.position.sub(iniCamPosition)
-  scene.add(modelScene)
-
   loadingModel.value = false
-  currentModel.value = modelScene
+  if (extension === 'glb') {
+    const modelScene = model.scene
+    // center model
+    modelScene.position.sub(iniCamPosition)
+    scene.add(modelScene)
+    currentModel.value = modelScene
+  } else {
+    currentModel.value = scene
+  }
+
   unref(sceneWrapper).appendChild(renderer.domElement)
   render(Date.now())
 }
+
+function loadLights(): void {
+  const light = new PointLight(lightParams.color, lightParams.intensity)
+  light.position.set(lightParams.posX, lightParams.posY, lightParams.posZ)
+  scene.add(light)
+
+  if (lightParams.ambient) {
+    const ambientLight = new AmbientLight()
+    scene.add(ambientLight)
+  }
+}
+
+function defaultMaterial(): MeshPhongMaterial {
+  return new MeshPhongMaterial(materialParams)
+}
+
 function render(animStartTime: number) {
   animationId.value = requestAnimationFrame(() => render(animStartTime))
   // TODO: enable animation
@@ -236,29 +311,29 @@ function render(animStartTime: number) {
   controls.update()
   renderer.render(scene, camera)
 }
+
 async function renderNewModel() {
   cancelAnimationFrame(unref(animationId))
-  scene.remove(scene.getObjectByName(unref(currentModel).name))
 
   await updateUrl()
 
   loadingModel.value = true
   hasError.value = false
-  await renderModel()
+  await renderModel(unref(fileType))
 }
+
 function cleanup3dScene() {
-  scene.traverse((obj) => {
-    scene.remove(obj)
-  })
   cancelAnimationFrame(unref(animationId))
   renderer.dispose()
 }
+
 function changeCursor(state: string) {
   const el = unref(sceneWrapper)
   if (el.classList.contains('model-viewport')) {
     el.style.cursor = state
   }
 }
+
 async function setActiveModel(driveAliasAndItem: string) {
   for (let i = 0; i < unref(modelFiles).length; i++) {
     if (
@@ -271,6 +346,7 @@ async function setActiveModel(driveAliasAndItem: string) {
     }
   }
 }
+
 function updateLocalHistory() {
   if (!unref(currentFileContext)) {
     return
@@ -286,10 +362,12 @@ function updateLocalHistory() {
     query: { ...unref(route).query, ...query }
   })
 }
+
 async function next() {
   if (!unref(isModelReady)) {
     return
   }
+
   if (unref(activeIndex) + 1 >= unref(modelFiles).length) {
     activeIndex.value = 0
   } else {
@@ -297,15 +375,18 @@ async function next() {
   }
 
   updateLocalHistory()
+  await unloadModels()
   // TODO: how to prevent activeFiles from being reduced
   // load activeFiles
   await loadFolderForFileContext(unref(currentFileContext))
   await renderNewModel()
 }
+
 async function prev() {
   if (!unref(isModelReady)) {
     return
   }
+
   if (unref(activeIndex) === 0) {
     activeIndex.value = unref(modelFiles).length - 1
   } else {
@@ -313,11 +394,22 @@ async function prev() {
   }
 
   updateLocalHistory()
+  await unloadModels()
   // TODO: how to prevent activeFiles from being reduced
   // load activeFiles
   await loadFolderForFileContext(unref(currentFileContext))
   await renderNewModel()
 }
+
+async function unloadModels(): Promise<void> {
+  for (let i = scene.children.length - 1; i >= 0; i--) {
+    let obj = scene.children[i]
+    if (unref(obj.type) === 'Group' || unref(obj.type) === 'Mesh') {
+      scene.remove(obj)
+    }
+  }
+}
+
 function toggleFullscreenMode() {
   const activateFullscreen = !unref(isFullScreenModeActivated)
   const el = unref(sceneWrapper)
@@ -332,12 +424,22 @@ function toggleFullscreenMode() {
     }
   }
 }
+
 function resetModelPosition() {
   if (unref(isModelReady)) {
     camera.position.copy(iniCamPosition)
     camera.position.z = iniCamZPosition
     camera.rotation.copy(iniCamRotation)
     camera.lookAt(iniCamPosition)
+  }
+}
+
+function debug(output) {
+  if (debugIsEnabled) {
+    scene.add(new AxesHelper(10))
+    console.log('####### DEBUG 3D MODEL #######')
+    console.log(output)
+    console.log('#####################')
   }
 }
 </script>
@@ -352,6 +454,7 @@ function resetModelPosition() {
     cursor: grab;
   }
 }
+
 #spinner {
   & > div {
     width: unset;

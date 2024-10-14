@@ -2,12 +2,11 @@
 
 ![3d model viewer ui](./docs/ss-light.png)
 
-This is an extension for [ownCloud web](https://github.com/owncloud/web) for viewing 3D files. Currently, it can only display 3D models in `.glb` file format.
+This is an extension for [ownCloud web](https://github.com/owncloud/web) for viewing 3D files.
 
 ## Feature Highlights ✨
 
-- Supported formats:
-  - `.glb`
+- Supported formats: [`.glb`, `.stl`, `.fbx`, `.obj`]
 - Zoom/Rotate model
 - Fullscreen view
 - Navigate between model files
@@ -51,7 +50,7 @@ Now, you can access the app at https://localhost:9200
 
 ## 3D models
 
-The app currently only supports 3D models in `.glb` format. You can find models on the following platforms:
+You can find models on the following platforms:
 
 - [sketchfab](https://sketchfab.com/)
 - [3Dexport](https://3dexport.com/free-3d-models)

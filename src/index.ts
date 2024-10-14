@@ -33,6 +33,18 @@ export default defineWebApplication({
           {
             extension: 'glb',
             label: 'View 3D Model'
+          },
+          {
+            extension: 'stl',
+            label: 'View 3D Model'
+          },
+          {
+            extension: 'fbx',
+            label: 'View 3D Model'
+          },
+          {
+            extension: 'obj',
+            label: 'View 3D Model'
           }
         ]
       },

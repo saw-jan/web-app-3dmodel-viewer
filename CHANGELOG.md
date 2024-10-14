@@ -8,8 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+Added basic OBJ support
+Added light and ambient
+Added default material
+Added basic FBX support
+Added basic debugging mode
+Added basic STL support 
 
 ### Fixed
+Fixed unloading models on prev/next
 
 ### Changed
 
