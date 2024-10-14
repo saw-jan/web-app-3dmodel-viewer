@@ -100,7 +100,6 @@ let iniCamPosition: Vector3 | null = null
 let iniCamZPosition: number = 0
 const iniCamRotation: Euler = new Euler(0, 0, 0)
 const animTimeoutSec = 1
-const debugIsEnabled = false
 
 // =====================
 // props
@@ -246,7 +245,9 @@ async function renderModel(extension: string) {
     }
   })
 
-  debug(model)
+  if (import.meta.env.MODE === 'development') {
+    debug(model)
+  }
 
   const box = new Box3()
   if (!model.hasOwnProperty('scene') && extension === 'stl') {
@@ -437,13 +438,11 @@ function resetModelPosition() {
   }
 }
 
-function debug(output) {
-  if (debugIsEnabled) {
-    scene.add(new AxesHelper(10))
-    console.log('####### DEBUG 3D MODEL #######')
-    console.log(output)
-    console.log('#####################')
-  }
+function debug(model: object) {
+  scene.add(new AxesHelper(10))
+  console.log('####### DEBUG 3D MODEL #######')
+  console.log(model)
+  console.log('#####################')
 }
 </script>
 
