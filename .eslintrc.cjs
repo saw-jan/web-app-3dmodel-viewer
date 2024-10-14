@@ -15,11 +15,7 @@ module.exports = {
     sourceType: 'module'
   },
   rules: {
-    /**
-     * TODO: fix project import issues and then enable it
-     * 'sort-imports': 'warn',
-     */
-    'require-await': 'warn',
+    'require-await': 'error',
     'no-new': 'off',
     'node/no-callback-literal': 'off',
     'unused-imports/no-unused-imports': 'error',

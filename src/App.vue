@@ -154,13 +154,13 @@ onMounted(async () => {
       await renderModel(unref(fileType))
       loadLights()
     } catch (e) {
-      cleanup3dScene()
+      teardown3dScene()
       hasError.value = true
     }
   }
 })
 onBeforeUnmount(() => {
-  cleanup3dScene()
+  teardown3dScene()
 })
 
 // =====================
@@ -326,8 +326,18 @@ async function renderNewModel() {
   await renderModel(unref(fileType))
 }
 
-function cleanup3dScene() {
+function unloadCurrentModel(): void {
+  for (let i = scene.children.length - 1; i >= 0; i--) {
+    let obj = scene.children[i]
+    if (unref(obj.type) === 'Group' || unref(obj.type) === 'Mesh') {
+      scene.remove(obj)
+    }
+  }
+}
+
+function teardown3dScene() {
   cancelAnimationFrame(unref(animationId))
+  unloadCurrentModel()
   renderer.dispose()
 }
 
@@ -379,7 +389,7 @@ async function next() {
   }
 
   updateLocalHistory()
-  await unloadModels()
+  unloadCurrentModel()
   // TODO: how to prevent activeFiles from being reduced
   // load activeFiles
   await loadFolderForFileContext(unref(currentFileContext))
@@ -398,20 +408,11 @@ async function prev() {
   }
 
   updateLocalHistory()
-  await unloadModels()
+  unloadCurrentModel()
   // TODO: how to prevent activeFiles from being reduced
   // load activeFiles
   await loadFolderForFileContext(unref(currentFileContext))
   await renderNewModel()
-}
-
-async function unloadModels(): Promise<void> {
-  for (let i = scene.children.length - 1; i >= 0; i--) {
-    let obj = scene.children[i]
-    if (unref(obj.type) === 'Group' || unref(obj.type) === 'Mesh') {
-      scene.remove(obj)
-    }
-  }
 }
 
 function toggleFullscreenMode() {
