@@ -65,6 +65,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader'
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
+import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import {
   AppLoadingSpinner,
@@ -216,7 +217,8 @@ const LoaderMap = {
   glb: GLTFLoader,
   stl: STLLoader,
   fbx: FBXLoader,
-  obj: OBJLoader
+  obj: OBJLoader,
+  ply: PLYLoader
 }
 
 const materialParams = {
@@ -250,7 +252,7 @@ async function renderModel(extension: string) {
   }
 
   const box = new Box3()
-  if (!model.hasOwnProperty('scene') && extension === 'stl') {
+  if (!model.hasOwnProperty('scene') && ['stl', 'ply'].includes(extension)) {
     const mesh = new Mesh(model, defaultMaterial())
     scene.add(mesh)
     box.setFromBufferAttribute(model.attributes.position)

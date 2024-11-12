@@ -2,7 +2,8 @@ export const mimeTypes = {
   fbx: 'application/octet-stream',
   stl: 'application/vnd.ms-pki.stl',
   obj: 'application/x-tgif',
-  glb: 'model/gltf-binary'
+  glb: 'model/gltf-binary',
+  ply: 'application/octet-stream'
   // gltf: 'model/gltf+json'
 }
 
