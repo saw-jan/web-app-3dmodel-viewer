@@ -1,0 +1,13 @@
+services:
+  ocis:
+    depends_on:
+      3dviewer:
+        condition: service_completed_successfully
+
+  3dviewer:
+    image: sawjan/3dviewer:0.1.0
+    volumes:
+      - ocis-apps:/apps
+    entrypoint:
+      - /bin/sh
+    command: ['-c', 'cp -R /app/* /apps']
