@@ -28,7 +28,7 @@ This is an extension for [ownCloud web](https://github.com/owncloud/web) for vie
    ## oCIS Web Extensions ##
    MODEL_3D_VIEWER=:web_extensions/3dviewer.yaml
 
-   COMPOSE_FILE=docker-compose.yml${...}${3D_VIEWER:-}
+   COMPOSE_FILE=docker-compose.yml${...}${MODEL_3D_VIEWER:-}
    ```
 
 3. Run `docker compose up` to run oCIS with the extensions
