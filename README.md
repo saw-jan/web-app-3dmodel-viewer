@@ -22,13 +22,13 @@ This is an extension for [ownCloud web](https://github.com/owncloud/web) for vie
 
 1. Copy [`deployments/3dviewer.yaml`](./deployments/3dviewer.yaml) into the [web_extensions](https://github.com/owncloud/ocis/tree/master/deployments/examples/ocis_full/web_extensions)
    subfolder of oCIS full deployment example.
-2. Add `MODEL_3D_VIEWER=:web_extensions/3dviewer.yaml` to the `## oCIS Web Extensions ##` section of the `.env` file of your installation (file is located in [deployments/examples/ocis_full](https://github.com/owncloud/ocis/tree/master/deployments/examples/ocis_full)) and append it to the `COMPOSE_FILE` variable.
+2. Add `APP_3D_VIEWER=:web_extensions/3dviewer.yaml` to the `## oCIS Web Extensions ##` section of the `.env` file of your installation (file is located in [deployments/examples/ocis_full](https://github.com/owncloud/ocis/tree/master/deployments/examples/ocis_full)) and append it to the `COMPOSE_FILE` variable.
 
    ```env
    ## oCIS Web Extensions ##
-   MODEL_3D_VIEWER=:web_extensions/3dviewer.yaml
+   APP_3D_VIEWER=:web_extensions/3dviewer.yaml
 
-   COMPOSE_FILE=docker-compose.yml${...}${MODEL_3D_VIEWER:-}
+   COMPOSE_FILE=docker-compose.yml${...}${APP_3D_VIEWER:-}
    ```
 
 3. Run `docker compose up` to run oCIS with the extensions
